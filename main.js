@@ -128,11 +128,17 @@ app.whenReady().then(() => {
     setupAutoUpdates();
   }
 });
-
+ipcMain.handle('get-app-version', () => app.getVersion());
+console.log("App version:", app.getVersion());
 ipcMain.on("login-success", () => {
   if (loginWin) {
     loginWin.close();
     loginWin = null;
+  }
+  // Prevent multiple dashboard windows
+  if (dashboardWin && !dashboardWin.isDestroyed()) {
+    dashboardWin.focus();
+    return;
   }
   dashboardWin = new BrowserWindow({
     width: 1980,

@@ -17,8 +17,7 @@
             style="font-family: 'Poppins', Arial, sans-serif; color: #111;">
             <i class="bi bi-mortarboard-fill me-2" style="font-size: 1.5rem; color: #111;"></i>
             EduPortal
-
-
+            <span class="me-3" id="appVersion" style="font-size:0.9rem; color:#888; font-weight:400;"></span>
         </span>
         <div class="d-flex align-items-center" style="gap:0;">
             <button id="main-minimize-btn"
@@ -34,7 +33,9 @@
         </div>
     </nav>
     <div class="sidebar d-flex flex-column p-3" style="padding-top: 56px;">
-        <h4 class="mb-4 text-center"><i class="bi bi-mortarboard-fill me-2"></i>EduPortal</h4>
+        <h4 class="mb-4 text-center">
+            <i class="bi bi-mortarboard-fill me-2"></i>EduPortal
+        </h4>
         <div class="mb-3 ps-1" style="font-weight:600; font-size:1.1rem; color:#111;">Menu</div>
         <nav class="nav flex-column gap-2" style="flex:1 1 auto;">
             <a class="nav-link active" href="#" id="dashboardLink"><i class="bi bi-house me-2"></i>Dashboard</a>
@@ -148,6 +149,12 @@
     <script src="../js/assign-subjects.js"></script>
     <script src="../js/classes-with-subjects.js"></script>
     <script src="../js/settings.js"></script>
+    <script>
+        window.api.getAppVersion().then(version => {
+            const el = document.getElementById('appVersion');
+            if (el) el.textContent = `v${version}`;
+        });
+    </script>
     <script>
         // Notification System
         function showNotification(message, type = "success", duration = 4000) {
