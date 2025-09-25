@@ -6,19 +6,13 @@ const fs = require("fs");
 const { initializeApp, cert } = require("firebase-admin/app");
 const { getDatabase } = require("firebase-admin/database");
 const { getStorage } = require("firebase-admin/storage");
-const { autoUpdater } = require("electron-updater"); //
+const { autoUpdater } = require("electron-updater");
 require("dotenv").config(); // load .env if present
-console.log("App starting...");
-console.log(
-  "Node env:",
-  process.env.FIREBASE_SERVICE_ACCOUNT_FILE || "production"
-);
-console.log(
-  "Node env:",
-  process.env.FIREBASE_SERVICE_ACCOUNT_JSON || "production"
-);
-
 const serviceAccount = loadServiceAccount();
+
+let rtdb = null;
+let storage = null;
+
 let firebaseReady = false;
 if (!serviceAccount) {
   console.error("[Firebase] Missing credentials");
@@ -31,41 +25,31 @@ if (!serviceAccount) {
     });
     firebaseReady = true;
     console.log("[Firebase] Initialized");
+    rtdb = getDatabase();
+    storage = getStorage();
   } catch (e) {
     console.error("[Firebase] Init error:", e.message);
   }
 }
 
-// Secure service account loading (env-based)
 function loadServiceAccount() {
-  // Option 1: Inline JSON via env var (recommended for CI/build)
+  // Option 1: Inline JSON via env var
   if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
     try {
+      console.log(
+        "[Firebase] Using inline JSON from FIREBASE_SERVICE_ACCOUNT_JSON"
+      );
       return JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
     } catch (e) {
       console.error("Invalid FIREBASE_SERVICE_ACCOUNT_JSON:", e);
     }
   }
-  // Option 2: Path to JSON file via env var
-  if (process.env.FIREBASE_SERVICE_ACCOUNT_FILE) {
-    try {
-      const p = process.env.FIREBASE_SERVICE_ACCOUNT_FILE;
-      if (fs.existsSync(p)) {
-        return JSON.parse(fs.readFileSync(p, "utf8"));
-      } else {
-        console.error("Service account file not found:", p);
-      }
-    } catch (e) {
-      console.error("Failed reading FIREBASE_SERVICE_ACCOUNT_FILE:", e);
-    }
-  }
+
   console.error(
-    "Service account not provided. Set FIREBASE_SERVICE_ACCOUNT_JSON or FIREBASE_SERVICE_ACCOUNT_FILE."
+    "[Firebase] Service account not provided. Set FIREBASE_SERVICE_ACCOUNT_JSON or FIREBASE_SERVICE_ACCOUNT_FILE."
   );
   return null;
 }
-const rtdb = serviceAccount ? getDatabase() : null;
-const storage = serviceAccount ? getStorage() : null;
 
 function createWindow() {
   loginWin = new BrowserWindow({
