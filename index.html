@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>EduPortal</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+
+<body style="font-family: 'Poppins', Arial, sans-serif; user-select: none;">
+    <nav class="navbar navbar-light bg-white px-3 py-2 d-flex justify-content-between align-items-center fixed-top"
+        style="border-bottom: 1px solid #e5e7eb; -webkit-app-region: drag; user-select: none;">
+        <span class="navbar-brand mb-0 h4 d-flex align-items-center"
+            style="font-family: 'Poppins', Arial, sans-serif; user-select: none;">
+            <i class="bi bi-mortarboard-fill me-2" style="font-size: 1.5rem;"></i>
+            EduPortal
+        </span>
+        <div class="d-flex align-items-center" style="gap:0;">
+            <button id="custom-close-btn"
+                class="btn btn-sm p-0 d-flex align-items-center justify-content-center window-btn close" title="Close"
+                style="width: 28px; height: 28px; background: transparent; color: #444; border: none; -webkit-app-region: no-drag;">
+                <i class="bi bi-x-lg" style="font-size: 1.2rem;"></i>
+            </button>
+        </div>
+    </nav>
+    <div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center position-relative"
+        style="background: #fff;">
+        <div class="card border-0 mx-auto"
+            style="max-width: 480px; min-width: 340px; width: 100%; border-radius: 0.75rem;">
+            <div class="card-body p-4" style="border-radius: 0.75rem; background: #fff;">
+                <div class="text-center mb-4">
+                    <span class="d-flex justify-content-center align-items-center mb-2">
+                        <i class="bi bi-mortarboard-fill text-primary" style="font-size: 2rem;"></i>
+                    </span>
+                    <h3 class="fw-bold mb-0" style="font-family: 'Poppins', Arial, sans-serif; letter-spacing: 1px;">
+                        EduPortal</h3>
+                    <small class="text-muted">Admin Login</small>
+                </div>
+                <form id="admin-login-form" class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control px-3 py-2" name="username" id="username"
+                            placeholder="Username" required style="border-radius: 0.5rem;">
+                        <div class="invalid-feedback">Please enter your username.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control px-3 py-2" name="password" id="password"
+                            placeholder="Password" required style="border-radius: 0.5rem;">
+                        <div class="invalid-feedback">Please enter your password.</div>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Remember Me</label>
+                    </div>
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold" style="border-radius: 0.5rem;">Login</button>
+                </form>
+                <div id="login-result" class="mt-3 text-center"></div>
+            </div>
+        </div>
+    </div>
+    <script src="renderer.js"></script>
+    <script>
+        // Bootstrap validation
+        (() => {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+
+        // Admin login functionality
+        document.getElementById('admin-login-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const resultDiv = document.getElementById('login-result');
+            // Replace with your actual admin credentials or backend check
+            if (username === 'admin' && password === 'admin123') {
+                resultDiv.textContent = 'Login successful!';
+                resultDiv.classList.remove('text-danger');
+                resultDiv.classList.add('text-success');
+                setTimeout(() => {
+                    if (window.api && window.api.loginSuccess) {
+                        window.api.loginSuccess();
+                    }
+                }, 500);
+            } else {
+                resultDiv.textContent = 'Invalid username or password.';
+                resultDiv.classList.remove('text-success');
+                resultDiv.classList.add('text-danger');
+            }
+        });
+        // Remember Me functionality
+        window.addEventListener('DOMContentLoaded', function () {
+            const usernameInput = document.getElementById('username');
+            const rememberMeCheckbox = document.getElementById('rememberMe');
+            // Load remembered username
+            if (localStorage.getItem('rememberMe') === 'true') {
+                usernameInput.value = localStorage.getItem('rememberedUsername') || '';
+                rememberMeCheckbox.checked = true;
+                // Auto-login if credentials are valid
+                if (usernameInput.value === 'admin') {
+                    // You may want to store password securely, but for demo, check default
+                    // If you want to store password, use localStorage.getItem('rememberedPassword')
+                    // For now, auto-login only if username matches
+                    if (window.api && window.api.loginSuccess) {
+                        window.api.loginSuccess();
+                    }
+                }
+            }
+        });
+
+        document.getElementById('admin-login-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const rememberMe = document.getElementById('rememberMe').checked;
+            const resultDiv = document.getElementById('login-result');
+            // Remember Me logic
+            if (rememberMe) {
+                localStorage.setItem('rememberMe', 'true');
+                localStorage.setItem('rememberedUsername', username);
+            } else {
+                localStorage.removeItem('rememberMe');
+                localStorage.removeItem('rememberedUsername');
+            }
+            // Replace with your actual admin credentials or backend check
+            if (username === 'admin' && password === 'admin123') {
+                resultDiv.textContent = 'Login successful!';
+                resultDiv.classList.remove('text-danger');
+                resultDiv.classList.add('text-success');
+                setTimeout(() => {
+                    if (window.api && window.api.loginSuccess) {
+                        window.api.loginSuccess();
+                    }
+                }, 500);
+            } else {
+                resultDiv.textContent = 'Invalid username or password.';
+                resultDiv.classList.remove('text-success');
+                resultDiv.classList.add('text-danger');
+            }
+        });
+
+        // Window controls
+        document.getElementById('custom-close-btn').addEventListener('click', function () {
+            if (window.api && window.api.closeWindow) {
+                window.api.closeWindow();
+            } else {
+                window.close();
+            }
+        });
+        document.getElementById('custom-minimize-btn').addEventListener('click', function () {
+            if (window.api && window.api.minimizeWindow) {
+                window.api.minimizeWindow();
+            }
+        });
+        document.getElementById('custom-maximize-btn').addEventListener('click', function () {
+            if (window.api && window.api.maximizeWindow) {
+                window.api.maximizeWindow();
+            }
+        });
+    </script>
+</body>
+
+</html>

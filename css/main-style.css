@@ -1,0 +1,517 @@
+@import url("https://fonts.googleapis.com/css?family=Arvo");
+* {
+  margin: 0%;
+  padding: 0%;
+  box-sizing: border-box;
+  font-family: "Poppins";
+}
+
+::-webkit-scrollbar {
+  height: 3px;
+  width: 3px;
+  display: none;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  display: none;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #00c4cc;
+  width: 5px;
+}
+
+/* Custom Window Controls */
+.window-controls {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 32px;
+    background: #2c3e50;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    -webkit-app-region: drag;
+    user-select: none;
+    border-bottom: 1px solid #34495e;
+}
+
+.control-buttons {
+    display: flex;
+    -webkit-app-region: no-drag;
+}
+
+.control-btn {
+    width: 46px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: #ecf0f1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.control-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.close-btn:hover {
+    background: #e74c3c;
+}
+
+.maximize-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.minimize-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.app-container {
+    display: flex;
+    height: calc(100vh - 32px);
+    margin-top: 32px;
+}
+
+.main-container {
+  height: 100vh;
+  position: relative;
+  background-image: url(/assets/images/students-background-front-page.png);
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.main-nav {
+  position: fixed;
+  display: flex;
+  width: 100%;
+  top: 0;
+  justify-content: space-between;
+  height: 110px;
+  align-items: center;
+  text-transform: uppercase;
+  background-color: white;
+}
+.school-name {
+  margin-left: 5%;
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.school-name span {
+  margin-left: 20px;
+  font-size: 17px;
+}
+.school-name p {
+  font-size: 13px;
+  margin-left: 20px;
+  text-transform: lowercase;
+  font-weight: 400;
+}
+.nav-btns {
+  display: flex;
+  text-align: center;
+  justify-content: flex-end;
+  margin-right: 5%;
+}
+
+.nav-btns button {
+  background-color: rgba(0, 0, 0, 0);
+  outline: none;
+  border-style: none;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-left: 30px;
+  font-size: 14px;
+}
+
+.nav-btns button:hover {
+  cursor: pointer;
+  color: green;
+}
+.menu-icon-btn {
+  display: none;
+  cursor: pointer;
+  margin-right: 5%;
+}
+#home-page {
+  color: green;
+}
+
+/*front-page*/
+.front-page {
+  width: 100%;
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: space-evenly;
+  color: white;
+  text-align: center;
+}
+
+.front-page-sign-up h1 {
+  color: white;
+}
+.front-page-sign-up button {
+  width: 140px;
+  margin-top: 30px;
+  outline: none;
+  height: 40px;
+  font-size: 13px;
+  text-transform: uppercase;
+  background-color: rgba(0, 0, 0, 0);
+  border-style: none;
+  border: 1px solid white;
+  color: white;
+  border-radius: 5px;
+}
+
+.front-page-sign-up button:hover {
+  cursor: pointer;
+  color: white;
+  border: 1px solid white;
+}
+.news-announcements {
+  width: 100%;
+  margin-top: 5%;
+  margin-left: 5%;
+  margin-right: 5%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.news-announcements h1 {
+  text-transform: uppercase;
+  font-size: 20px;
+  font-family: "Source Serif 4", sans-serif;
+}
+/* Theme variable definitions */
+:root {
+  --app-bg:#f8fafc;
+  --surface:#ffffff;
+  --surface-alt:#f8f9fa;
+  --surface-muted:#eef2f6;
+  --border-color:#e0e0e0;
+  --text-color:#111111;
+  --text-muted:#6b7280;
+  --accent:#1976d2;
+  --accent-alt:#0d5aa6;
+  --danger:#dc2626;
+  --warning:#f59e0b;
+  --success:#16a34a;
+  --info:#0ea5e9;
+}
+
+body {
+  font-family: "Poppins", Arial, sans-serif;
+  background: var(--app-bg);
+  color: var(--text-color);
+  user-select: none;
+  transition: background .35s ease, color .35s ease;
+}
+
+/* Dark theme root toggle */
+/* Dark theme variable overrides */
+.theme-dark body,
+body.theme-dark {
+  --app-bg:#000000; /* was #0e141b; now true black */
+  --surface:#162231;
+  --surface-alt:#1a2735;
+  --surface-muted:#1f2e40;
+  --border-color:#253444;
+  --text-color:#e2e8f0;
+  --text-muted:#94a3b8;
+  --accent:#3b82f6;
+  --accent-alt:#2563eb;
+  --danger:#f87171;
+  --warning:#fbbf24;
+  --success:#22c55e;
+  --info:#38bdf8;
+}
+
+/* Dark theme adjustments referencing variables */
+.theme-dark .sidebar { background:var(--surface); color:var(--text-color); border-color:var(--border-color); }
+.theme-dark .sidebar .nav-link { color:var(--text-muted); }
+.theme-dark .sidebar .nav-link.active, .theme-dark .sidebar .nav-link:hover { color:var(--accent); }
+.theme-dark .card { background:var(--surface); border-color:var(--border-color); }
+.theme-dark .card-header { background:var(--surface-alt); border-bottom-color:var(--border-color); }
+.theme-dark .table { --bs-table-bg:transparent; }
+.theme-dark .table thead.table-dark { background:var(--surface-alt) !important; }
+.theme-dark .breadcrumb { background:var(--surface-alt); }
+.theme-dark .alert-info { background:#1e3a5f; color:#d1e9ff; border-color:#184166; }
+.theme-dark .alert-warning { background:#553f06; color:#fbd68d; }
+.theme-dark .notification-modal.success { box-shadow:0 8px 24px rgba(0,255,153,0.15); }
+.theme-dark .notification-modal.error { box-shadow:0 8px 24px rgba(255,60,60,0.2); }
+.theme-dark .notification-modal.info { box-shadow:0 8px 24px rgba(96,165,250,0.2); }
+.theme-dark .form-control, .theme-dark .form-select { background:var(--surface-alt); border-color:var(--border-color); color:var(--text-color); }
+.theme-dark .form-control:focus, .theme-dark .form-select:focus { background:var(--surface); color:#fff; }
+.theme-dark .input-group-text { background:var(--surface-alt); border-color:var(--border-color); color:var(--text-muted); }
+.theme-dark .table-bordered>:not(caption)>*>* { border-color:var(--border-color); }
+.theme-dark .badge.bg-info { background:var(--info) !important; }
+.theme-dark .badge.bg-primary { background:var(--accent-alt) !important; }
+.theme-dark .bg-white { background:var(--surface) !important; }
+.theme-dark .main-container {background: var(--app-bg) !important;background-image: none !important;}
+/* Utility surfaces */
+.surface { background:var(--surface); }
+.surface-alt { background:var(--surface-alt); }
+.surface-muted { background:var(--surface-muted); }
+.table-body-surface { background:var(--surface-alt); transition:background .35s ease; }
+.theme-dark .table-body-surface { background:var(--surface-alt); }
+
+/* Text helpers */
+.text-muted { color:var(--text-muted) !important; }
+
+/* Accent link coloring */
+a { color:var(--accent); }
+a:hover { color:var(--accent-alt); }
+
+/* Compact density */
+body.table-compact .table tbody tr td,
+body.table-compact .table thead th { padding:.35rem .5rem !important; }
+body.table-compact .list-group-item { padding:.35rem .5rem !important; }
+body.table-compact .btn { --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; }
+body.table-compact .input-group-text, body.table-compact .form-control, body.table-compact .form-select { padding:.35rem .5rem; }
+
+/* Hide scrollbars for sidebar and main-content */
+* {
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE 10+ */
+}
+
+*::-webkit-scrollbar,
+.sidebar::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, Opera */
+}
+
+.sidebar {
+  background: var(--surface);
+  color: var(--text-color);
+  height: 100vh; /* ensure full viewport height for reliable flex sizing */
+  width: 300px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding-top: 56px;
+  border-right: 1px solid var(--border-color);
+  display: flex;           /* make sidebar a column flex container */
+  flex-direction: column;  /* so children can stack and footer can pin */
+}
+
+/* Ensure the main nav area fills the sidebar height so footer can stick to bottom */
+.sidebar > nav {
+  display:flex;
+  flex-direction:column;
+  flex:1 1 auto;   /* fill remaining vertical space */
+  min-height:0;    /* allow child overflow calculations */
+  overflow-y:auto; /* enable internal scroll so sticky footer can pin */
+  padding-bottom: 1rem; /* breathing room above the pinned footer */
+}
+
+.sidebar .nav-link {
+  color: #111;
+  border-radius: 0.5rem;
+}
+
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover {
+  font-weight: 700;
+  color: #007bff;
+  background: transparent;
+}
+
+/* Sidebar footer buttons redesign */
+.sidebar-footer { border-top:1px solid var(--border-color); margin-top:auto; position:sticky; bottom:0; background:var(--surface); z-index: 1; }
+.btn-icon { width:40px; height:40px; display:flex; align-items:center; justify-content:center; padding:0; border-radius:0.75rem; border:1px solid var(--border-color); background:var(--surface); color:var(--text-color); }
+.btn-icon i { font-size:1.05rem; }
+.sidebar-footer .btn { font-weight:600; }
+.sidebar-footer .btn-reload { border:1px solid var(--border-color); background:var(--surface); color:var(--text-color); transition:transform .2s ease, background .2s ease; }
+.sidebar-footer .btn-reload:hover { background:var(--surface-alt); transform: rotate(0deg) scale(1.02); }
+.sidebar-footer .btn-logout { background:linear-gradient(135deg, var(--danger), #b91c1c); color:#fff; border:none; border-radius:0.75rem; box-shadow:0 6px 16px rgba(220,38,38,0.18); }
+.sidebar-footer .btn-logout:hover { filter:brightness(1.05); box-shadow:0 8px 18px rgba(220,38,38,0.24); }
+.sidebar-footer .btn-logout:active { transform: translateY(1px); }
+.theme-dark .sidebar-footer { border-color: var(--border-color); }
+
+/* Icon spin animation for reload */
+@keyframes spin360 { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+.icon-spin { animation: spin360 .45s ease-in-out; display:inline-block; }
+
+/* Unified breadcrumb design */
+.app-breadcrumb { 
+  --bc-bg: var(--surface-alt);
+  --bc-separator: var(--text-muted);
+  --bc-active: var(--text-color);
+  --bc-link: var(--accent);
+  --bc-link-hover: var(--accent-alt);
+  background: var(--bc-bg);
+  padding: .65rem 1rem;
+  border-radius: .85rem;
+  font-size: .95rem;
+  line-height: 1.1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .25rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,.04);
+  border:1px solid var(--border-color);
+}
+.app-breadcrumb .breadcrumb-item + .breadcrumb-item::before { 
+  content: '\f285'; /* bootstrap icon: chevron-right (fallback) */
+  font-family: 'bootstrap-icons';
+  font-size: .8rem;
+  color: var(--bc-separator);
+  vertical-align: middle;
+}
+.app-breadcrumb .breadcrumb-item a { 
+  color: var(--bc-link); 
+  font-weight: 500; 
+  text-decoration: none; 
+  display:inline-flex; 
+  align-items:center; 
+  gap:.25rem;
+}
+.app-breadcrumb .breadcrumb-item a:hover { color: var(--bc-link-hover); text-decoration: underline; }
+.app-breadcrumb .breadcrumb-item.active { font-weight:600; color: var(--bc-active); }
+.theme-dark .app-breadcrumb { box-shadow: 0 2px 6px rgba(0,0,0,.4); }
+.theme-dark .app-breadcrumb .breadcrumb-item + .breadcrumb-item::before { color: var(--text-muted); }
+
+
+/* Bottom Left Notification Modal */
+.notification-modal {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  min-width: 300px;
+  max-width: 400px;
+  /* ensure notifications are always above any overlays/modals */
+  z-index: 2147483647; /* max 32-bit int */
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border: none;
+  animation: slideInLeft 0.3s ease-out;
+}
+
+.notification-modal.success {
+  background: linear-gradient(135deg, #00c851 0%, #00a142 100%);
+  color: white;
+}
+
+.notification-modal.error {
+  background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+  color: white;
+}
+
+.notification-modal.info {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  color: white;
+}
+
+/* warning style (used by preferences reset) */
+.notification-modal.warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+}
+.theme-dark .notification-modal.warning { box-shadow:0 8px 24px rgba(245,158,11,0.25); }
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutLeft {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+.notification-modal.hiding {
+  animation: slideOutLeft 0.3s ease-in;
+}
+
+.notification-content {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.notification-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.notification-text {
+  flex-grow: 1;
+  font-weight: 500;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.notification-close:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Ensure dropdown menus are not clipped and appear above content in tables */
+#teachersContainer .table-responsive {
+  overflow: visible; /* allow dropdowns to extend outside table wrapper */
+}
+
+/* Ensure student dropdown menus are not clipped */
+#studentsContainer .table-responsive {
+  overflow: visible;
+}
+
+.table .dropdown-menu,
+.card .dropdown-menu,
+.dropdown-menu {
+  z-index: 2000; /* above navbar and other components */
+}
+
+/* Student avatar (list & table) */
+.student-avatar-wrapper { position:relative; }
+.student-avatar-img { 
+  position:absolute; top:0; left:0; width:40px; height:40px; border-radius:50%; object-fit:cover; border:1px solid var(--border-color); background:var(--surface-muted); box-shadow:0 0 0 2px var(--surface);
+}
+.theme-dark .student-avatar-img { border-color:var(--border-color); box-shadow:0 0 0 2px var(--surface); }
+

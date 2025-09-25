@@ -1,0 +1,52 @@
+{
+  "name": "eduportal",
+  "version": "1.0.0",
+  "description": "Electron app with Firebase Admin for managing students, teachers, sections, and subjects.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.nvians.app",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Raffy Cadano",
+        "repo": "nvians"
+      }
+    ],
+    "files": [
+      "**/*",
+      "!.env",
+      "!firebase/**",
+      "!**/serviceAccountKey.json"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "icons/icon.ico"
+    },
+    "mac": {
+      "icon": "icons/icon.png"
+    },
+    "linux": {
+      "icon": "icons/icon.png",
+      "category": "Education"
+    }
+  },
+  "author": "Raffy Cadano",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.2",
+    "electron-updater": "^6.6.2",
+    "firebase-admin": "^11.10.1"
+  },
+  "devDependencies": {
+    "electron": "^29.0.0",
+    "electron-builder": "^24.13.3",
+    "png-to-ico": "^3.0.1"
+  }
+}

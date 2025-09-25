@@ -1,0 +1,67 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Builds / Packaging
+dist/
+out/
+release/
+*.asar
+*.asar.unpacked/
+
+# Logs & Diagnostics
+logs/
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# Env / Secrets
+.env
+.env.*.local
+firebase/serviceAccountKey.json
+serviceAccountKey.json
+*.pem
+*.pfx
+
+# Firebase creds via external path (do not commit copies)
+firebase/serviceAccountKey.json
+secure/
+secrets/
+*.key.json
+
+# Cache
+.cache/
+.tmp/
+temp/
+*.swp
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# Backups / exports
+backup/
+backups/
+*.backup.json
+*.bak
+*.tgz
+*.zip
+
+# Generated assets
+coverage/
+reports/
+*.map
+
+# Optional lockfiles (keep only one if you use it)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml

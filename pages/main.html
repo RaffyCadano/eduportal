@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>EduPortal Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/main-style.css">
+</head>
+
+<body>
+    <nav class="navbar px-3 py-2 d-flex justify-content-between align-items-center fixed-top"
+        style="background: #fff; color: #111; border-bottom: 1px solid #e0e0e0; -webkit-app-region: drag; user-select: none; z-index: 100;">
+        <span class="navbar-brand mb-0 h4 d-flex align-items-center"
+            style="font-family: 'Poppins', Arial, sans-serif; color: #111;">
+            <i class="bi bi-mortarboard-fill me-2" style="font-size: 1.5rem; color: #111;"></i>
+            EduPortal
+
+
+        </span>
+        <div class="d-flex align-items-center" style="gap:0;">
+            <button id="main-minimize-btn"
+                class="btn btn-sm p-0 d-flex align-items-center justify-content-center window-btn" title="Minimize"
+                style="width: 28px; height: 28px; background: transparent; color: #111; border: none; -webkit-app-region: no-drag;">
+                <i class="bi bi-dash" style="font-size: 1.2rem; color: #111;"></i>
+            </button>
+            <button id="main-close-btn"
+                class="btn btn-sm p-0 d-flex align-items-center justify-content-center window-btn close" title="Close"
+                style="width: 28px; height: 28px; background: transparent; color: #111; border: none; -webkit-app-region: no-drag;">
+                <i class="bi bi-x-lg" style="font-size: 1.2rem; color: #111;"></i>
+            </button>
+        </div>
+    </nav>
+    <div class="sidebar d-flex flex-column p-3" style="padding-top: 56px;">
+        <h4 class="mb-4 text-center"><i class="bi bi-mortarboard-fill me-2"></i>EduPortal</h4>
+        <div class="mb-3 ps-1" style="font-weight:600; font-size:1.1rem; color:#111;">Menu</div>
+        <nav class="nav flex-column gap-2" style="flex:1 1 auto;">
+            <a class="nav-link active" href="#" id="dashboardLink"><i class="bi bi-house me-2"></i>Dashboard</a>
+            <div class="nav-item">
+                <button class="nav-link w-100 text-start" id="studentsDropdownBtn" type="button"
+                    style="background: none; border: none; outline: none; box-shadow: none;">
+                    <i class="bi bi-people me-2"></i>Students
+                    <i id="studentsDropdownIcon" class="bi bi-plus float-end"></i>
+                </button>
+                <div id="studentsSubmenu" style="display: none; margin-left: 32px;">
+                    <a class="nav-link allStudentsLink" href="#" id="allStudentsLink">All Students</a>
+                    <a class="nav-link addStudentLink" href="#" id="addStudentLink">Add Student</a>
+                    <a class="nav-link manageLoginLink" href="#" id="manageLoginLink">Manage Login</a>
+                </div>
+            </div>
+            <div class="nav-item">
+                <button class="nav-link w-100 text-start" id="teachersDropdownBtn" type="button"
+                    style="background: none; border: none; outline: none; box-shadow: none;">
+                    <i class="bi bi-person-badge me-2"></i>Teachers
+                    <i id="teachersDropdownIcon" class="bi bi-plus float-end"></i>
+                </button>
+                <div id="teachersSubmenu" style="display: none; margin-left: 32px;">
+                    <a class="nav-link allTeachersLink" href="#" id="allTeachersLink">All Teachers</a>
+                    <a class="nav-link addTeachersLink" href="#" id="addTeachersLink">Add Teachers</a>
+                    <a class="nav-link manageTeachersLoginLink" href="#" id="manageTeachersLoginLink">Manage Login</a>
+                </div>
+            </div>
+            <div class="nav-item">
+                <button class="nav-link w-100 text-start" id="sectionsDropdownBtn" type="button"
+                    style="background: none; border: none; outline: none; box-shadow: none;">
+                    <i class="bi bi-journal me-2"></i>Sections
+                    <i id="sectionsDropdownIcon" class="bi bi-plus float-end"></i>
+                </button>
+                <div id="sectionsSubmenu" style="display: none; margin-left: 32px;">
+                    <a class="nav-link allSectionsLink" href="#" id="allSectionsLink">All Sections</a>
+                    <a class="nav-link newSectionLink" href="#" id="newSectionLink">New Section</a>
+                </div>
+            </div>
+            <div class="nav-item">
+                <button class="nav-link w-100 text-start" id="subjectsDropdownBtn" type="button"
+                    style="background: none; border: none; outline: none; box-shadow: none;">
+                    <i class="bi bi-book me-2"></i>Subjects
+                    <i id="subjectsDropdownIcon" class="bi bi-plus float-end"></i>
+                </button>
+                <div id="subjectsSubmenu" style="display: none; margin-left: 32px;">
+                    <a class="nav-link" href="#" id="classesWithSubjectsLink">Classes with Subjects</a>
+                    <a class="nav-link" href="#" id="assignSubjectsLink">Assign Subjects</a>
+                </div>
+            </div>
+            <a class="nav-link" href="#" id="settingsLink"><i class="bi bi-gear me-2"></i>Settings</a>
+        </nav>
+        <div class="sidebar-footer mt-3 pt-3 px-1 w-100">
+            <div class="d-flex align-items-center gap-2">
+                <button id="reload-btn" class="btn rounded-1 bg-primary text-white btn-reload" data-bs-toggle="tooltip" data-bs-placement="top" title="Reload">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+                <button id="logout-btn" class="btn btn-logout rounded-1 flex-grow-1 d-flex align-items-center justify-content-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Logout">
+                    <i class="bi bi-box-arrow-right me-2"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content: Professional Dashboard -->
+    <div class="main-content"
+        style="margin-left: 300px; margin-top: 56px; padding: 32px 24px; min-height: calc(100vh - 56px); background: #f8fafc;">
+
+        <!-- Notification Container -->
+        <div id="notificationContainer"></div>
+
+        <div class="container-fluid px-0">
+            <div id="dashboardContainer"></div>
+
+        </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal fade" id="logoutConfirmModal" tabindex="-1" aria-labelledby="logoutConfirmLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="logoutConfirmLabel"><i class="bi bi-box-arrow-right me-2"></i>Confirm Logout</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">Are you sure you want to logout?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmLogoutBtn">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/all-students.js"></script>
+    <script src="../js/dashboard.js"></script>
+    <script src="../js/all-credentials.js"></script>
+    <script src="../js/all-teachers.js"></script>
+    <script src="../js/all-sections.js"></script>
+    <script src="../js/assign-subjects.js"></script>
+    <script src="../js/classes-with-subjects.js"></script>
+    <script src="../js/settings.js"></script>
+    <script>
+        // Notification System
+        function showNotification(message, type = "success", duration = 4000) {
+            let container = document.getElementById("notificationContainer");
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'notificationContainer';
+                document.body.appendChild(container);
+            }
+
+            // Create notification element
+            const notification = document.createElement("div");
+            notification.className = `notification-modal ${type}`;
+
+            // Determine icon based on type
+            let icon = "";
+            switch (type) {
+                case "success":
+                    icon = "bi-check-circle-fill";
+                    break;
+                case "error":
+                    icon = "bi-exclamation-triangle-fill";
+                    break;
+                case "info":
+                    icon = "bi-info-circle-fill";
+                    break;
+                case "warning":
+                    icon = "bi-exclamation-circle-fill";
+                    break;
+                default:
+                    icon = "bi-check-circle-fill";
+            }
+
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="notification-icon bi ${icon}"></i>
+                    <div class="notification-text">${message}</div>
+                    <button class="notification-close" onclick="hideNotification(this.parentElement.parentElement)">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+            `;
+
+            // Add to container
+            container.appendChild(notification);
+
+            // Auto hide after duration
+            setTimeout(() => {
+                hideNotification(notification);
+            }, duration);
+        }
+
+        function hideNotification(notification) {
+            if (notification && notification.parentElement) {
+                notification.classList.add("hiding");
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.parentElement.removeChild(notification);
+                    }
+                }, 300);
+            }
+        }
+
+        // Reload button functionality with subtle icon spin
+        (function(){
+            const reloadBtn = document.getElementById("reload-btn");
+            if (reloadBtn) {
+                reloadBtn.addEventListener("click", function () {
+                    const icon = this.querySelector('i');
+                    if (icon) {
+                        icon.classList.add('icon-spin');
+                        setTimeout(()=>{ icon.classList.remove('icon-spin'); location.reload(); }, 450);
+                    } else {
+                        location.reload();
+                    }
+                });
+            }
+        })();
+
+        // Store last visited page in localStorage on navigation
+        function setLastPage(page) {
+            localStorage.setItem("lastPage", page);
+        }
+
+        // Example: Attach to sidebar navigation
+        document.getElementById("dashboardLink").addEventListener("click", function () {
+            setLastPage("dashboard");
+        });
+        document.getElementById("allStudentsLink").addEventListener("click", function () {
+            setLastPage("allStudents");
+        });
+        document.getElementById("addStudentLink").addEventListener("click", function () {
+            setLastPage("addStudent");
+        });
+        document.getElementById("manageLoginLink").addEventListener("click", function () {
+            setLastPage("manageLogin");
+        });
+
+        document.getElementById("allTeachersLink").addEventListener("click", function () {
+            setLastPage("allTeachers");
+        });
+        document.getElementById("addTeachersLink").addEventListener("click", function () {
+            setLastPage("addTeacher");
+        });
+        document.getElementById("manageTeachersLoginLink").addEventListener("click", function () {
+            setLastPage("manageTeachersLogin");
+        });
+        // Sections
+        document.getElementById("allSectionsLink").addEventListener("click", function () {
+            setLastPage("allSections");
+        });
+        document.getElementById("newSectionLink").addEventListener("click", function () {
+            setLastPage("newSection");
+        });
+        // Subjects
+        document.getElementById("classesWithSubjectsLink").addEventListener("click", function () {
+            setLastPage("classesWithSubjects");
+        });
+        document.getElementById("assignSubjectsLink").addEventListener("click", function () {
+            setLastPage("assignSubjects");
+        });
+        document.getElementById("settingsLink").addEventListener("click", function () {
+            setLastPage("settings");
+        });
+        // Add similar for other sidebar links as needed
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const lastPage = localStorage.getItem("lastPage");
+            if (lastPage) {
+                // Open the correct dropdown if needed
+                if (["allStudents", "addStudent", "manageLogin"].includes(lastPage)) {
+                    document.getElementById("studentsSubmenu").style.display = "block";
+                    document.getElementById("studentsDropdownIcon").className = "bi bi-dash float-end";
+                }
+                if (["allTeachers", "addTeacher", "manageTeachersLogin"].includes(lastPage)) {
+                    document.getElementById("teachersSubmenu").style.display = "block";
+                    document.getElementById("teachersDropdownIcon").className = "bi bi-dash float-end";
+                }
+                if (["allSections", "newSection"].includes(lastPage)) {
+                    document.getElementById("sectionsSubmenu").style.display = "block";
+                    document.getElementById("sectionsDropdownIcon").className = "bi bi-dash float-end";
+                }
+                if (["classesWithSubjects", "assignSubjects"].includes(lastPage)) {
+                    document.getElementById("subjectsSubmenu").style.display = "block";
+                    document.getElementById("subjectsDropdownIcon").className = "bi bi-dash float-end";
+                }
+
+                // Trigger the correct page click
+                if (lastPage === "dashboard") {
+                    document.getElementById("dashboardLink").click();
+                }
+                else if (lastPage === "allStudents") {
+                    document.getElementById("allStudentsLink").click();
+                }
+                else if (lastPage === "addStudent") {
+                    document.getElementById("addStudentLink").click();
+                }
+                else if (lastPage === "manageLogin") {
+                    document.getElementById("manageLoginLink").click();
+                }
+                else if (lastPage === "allTeachers") {
+                    document.getElementById("allTeachersLink").click();
+                }
+                else if (lastPage === "addTeacher") {
+                    document.getElementById("addTeachersLink").click();
+                }
+                else if (lastPage === "manageTeachersLogin") {
+                    document.getElementById("manageTeachersLoginLink").click();
+                }
+                else if (lastPage === "allSections") {
+                    document.getElementById("allSectionsLink").click();
+                }
+                else if (lastPage === "newSection") {
+                    document.getElementById("newSectionLink").click();
+                }
+                else if (lastPage === "classesWithSubjects") {
+                    document.getElementById("classesWithSubjectsLink").click();
+                }
+                else if (lastPage === "assignSubjects") {
+                    document.getElementById("assignSubjectsLink").click();
+                }
+                else if (lastPage === "settings") {
+                    document.getElementById("settingsLink").click();
+                }
+                // Add similar for other pages as needed
+            }
+        });
+                // Centralized breadcrumb activation mapping
+                function wireBreadcrumbs(root=document) {
+                    const map = {
+                        dashboardBreadcrumb: 'dashboardLink',
+                        studentsBreadcrumb: 'allStudentsLink',
+                        teachersBreadcrumb: 'allTeachersLink',
+                        sectionsBreadcrumb: 'allSectionsLink',
+                        subjectsBreadcrumb: 'classesWithSubjectsLink'
+                    };
+                    Object.keys(map).forEach(id => {
+                        const el = root.getElementById ? root.getElementById(id) : document.getElementById(id);
+                        if (el && !el.dataset.bcWired) {
+                            el.dataset.bcWired = '1';
+                            el.addEventListener('click', e => {
+                                e.preventDefault();
+                                const target = document.getElementById(map[id]);
+                                if (target) target.click();
+                            });
+                        }
+                    });
+                }
+                // Initial wire for any breadcrumbs present now
+                wireBreadcrumbs();
+                // Mutation observer to catch dynamically injected breadcrumb navs
+                const observer = new MutationObserver(muts => {
+                    for (const m of muts) {
+                        if (m.addedNodes && m.addedNodes.length) {
+                            m.addedNodes.forEach(n => { if (n.nodeType === 1) wireBreadcrumbs(n); });
+                        }
+                    }
+                });
+                observer.observe(document.body, { childList:true, subtree:true });
+        // Students sidebar submenu functionality (restored)
+        const studentsDropdownBtn = document.getElementById("studentsDropdownBtn");
+        const studentsSubmenu = document.getElementById("studentsSubmenu");
+        if (studentsDropdownBtn && studentsSubmenu) {
+            studentsSubmenu.style.display = "none";
+            const studentsIcon = document.getElementById("studentsDropdownIcon");
+            if (studentsIcon) studentsIcon.className = "bi bi-plus float-end";
+            studentsDropdownBtn.addEventListener("click", function () {
+                const isClosed = studentsSubmenu.style.display === "none";
+                studentsSubmenu.style.display = isClosed ? "block" : "none";
+                if (studentsIcon) studentsIcon.className = isClosed ? "bi bi-dash float-end" : "bi bi-plus float-end";
+            });
+        }
+        // Subjects sidebar submenu functionality
+        const subjectsDropdownBtn = document.getElementById("subjectsDropdownBtn");
+        const subjectsSubmenu = document.getElementById("subjectsSubmenu");
+        subjectsSubmenu.style.display = "none";
+        document.getElementById("subjectsDropdownIcon").className =
+            "bi bi-plus float-end";
+        subjectsDropdownBtn.addEventListener("click", function () {
+            const isClosed = subjectsSubmenu.style.display === "none";
+            subjectsSubmenu.style.display = isClosed ? "block" : "none";
+            document.getElementById("subjectsDropdownIcon").className = isClosed
+                ? "bi bi-dash float-end"
+                : "bi bi-plus float-end";
+        });
+        document
+            .getElementById("classesWithSubjectsLink")
+            .addEventListener("click", function (e) {
+                e.preventDefault();
+                if (window.openClassesWithSubjectsPage) {
+                    openClassesWithSubjectsPage();
+                } else {
+                    showNotification("Loading classes with subjects...", "info", 1800);
+                    setTimeout(()=>{ if (window.openClassesWithSubjectsPage) openClassesWithSubjectsPage(); }, 250);
+                }
+            });
+        document
+            .getElementById("assignSubjectsLink")
+            .addEventListener("click", function (e) {
+                e.preventDefault();
+                if (window.openAssignSubjectsPage) {
+                    openAssignSubjectsPage();
+                } else {
+                    showNotification("Loading assign subjects module...", "info", 2000);
+                    setTimeout(()=>{ if (window.openAssignSubjectsPage) openAssignSubjectsPage(); }, 250);
+                }
+            });
+        // Sections sidebar submenu functionality
+        const sectionsDropdownBtn = document.getElementById("sectionsDropdownBtn");
+        const sectionsSubmenu = document.getElementById("sectionsSubmenu");
+        sectionsSubmenu.style.display = "none";
+        document.getElementById("sectionsDropdownIcon").className =
+            "bi bi-plus float-end";
+        sectionsDropdownBtn.addEventListener("click", function () {
+            const isClosed = sectionsSubmenu.style.display === "none";
+            sectionsSubmenu.style.display = isClosed ? "block" : "none";
+            document.getElementById("sectionsDropdownIcon").className = isClosed
+                ? "bi bi-dash float-end"
+                : "bi bi-plus float-end";
+        });
+        // Teachers sidebar submenu functionality
+        const teachersDropdownBtn = document.getElementById("teachersDropdownBtn");
+        const teachersSubmenu = document.getElementById("teachersSubmenu");
+        teachersSubmenu.style.display = "none";
+        document.getElementById("teachersDropdownIcon").className =
+            "bi bi-plus float-end";
+        teachersDropdownBtn.addEventListener("click", function () {
+            const isClosed = teachersSubmenu.style.display === "none";
+            teachersSubmenu.style.display = isClosed ? "block" : "none";
+            document.getElementById("teachersDropdownIcon").className = isClosed
+                ? "bi bi-dash float-end"
+                : "bi bi-plus float-end";
+        });
+
+        // Close all modals
+        document
+            .getElementById("main-close-btn")
+            .addEventListener("click", function () {
+                if (window.api && window.api.closeWindow) {
+                    window.api.closeWindow();
+                } else {
+                    window.close();
+                }
+            });
+        document
+            .getElementById("main-minimize-btn")
+            .addEventListener("click", function () {
+                if (window.api && window.api.minimizeWindow) {
+                    window.api.minimizeWindow();
+                }
+            });
+        // Logout button functionality with confirmation modal
+        function performLogout() {
+            try { localStorage.clear(); } catch(_) {}
+            if (window.api && window.api.openLoginWindow) {
+                window.api.openLoginWindow();
+            } else if (window.electron && window.electron.ipcRenderer) {
+                window.electron.ipcRenderer.send("open-login-window");
+            } else {
+                window.location.replace("../index.html");
+            }
+        }
+        (function(){
+            const logoutBtn = document.getElementById("logout-btn");
+            const modalEl = document.getElementById('logoutConfirmModal');
+            const confirmBtn = document.getElementById('confirmLogoutBtn');
+            const modal = (modalEl && window.bootstrap && bootstrap.Modal)
+                ? bootstrap.Modal.getOrCreateInstance(modalEl)
+                : null;
+            if (logoutBtn && modal) {
+                logoutBtn.addEventListener("click", function () { modal.show(); });
+            } else if (logoutBtn) {
+                // Fallback if Bootstrap modal isn't available
+                logoutBtn.addEventListener("click", function () {
+                    const ok = window.confirm("Are you sure you want to logout?");
+                    if (ok) performLogout();
+                });
+            }
+            if (confirmBtn && modalEl && (window.bootstrap && bootstrap.Modal)) {
+                confirmBtn.addEventListener('click', () => {
+                    const m = bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl);
+                    // Optional UX: disable button briefly to avoid double clicks
+                    try { confirmBtn.disabled = true; } catch(_) {}
+                    m.hide();
+                    setTimeout(()=>{ performLogout(); }, 150);
+                });
+            }
+        })();
+
+        // Enable Bootstrap tooltips for sidebar footer buttons
+        (function(){
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.forEach(function (tooltipTriggerEl) { try { new bootstrap.Tooltip(tooltipTriggerEl); } catch(_){} });
+        })();
+
+    </script>
+</body>
+
+</html>
