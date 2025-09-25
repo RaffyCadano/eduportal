@@ -19,7 +19,7 @@
     ],
     "files": [
       "**/*",
-      "!.env",
+      ".env",
       "!firebase/**",
       "!**/serviceAccountKey.json"
     ],
