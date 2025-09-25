@@ -79,11 +79,11 @@ function showStartupError(msg) {
 // Secure service account loading (env-based)
 function loadServiceAccount() {
   // Option 1: Inline JSON via env var (recommended for CI/build)
-  if (process.env.FIREBASE_SERVICE_ACCOUNT_FILE) {
+  if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
     try {
-      return JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_FILE);
+      return JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
     } catch (e) {
-      console.error("Invalid FIREBASE_SERVICE_ACCOUNT_FILE:", e);
+      console.error("Invalid FIREBASE_SERVICE_ACCOUNT_JSON:", e);
     }
   }
   // Option 2: Path to JSON file via env var
@@ -104,17 +104,6 @@ function loadServiceAccount() {
   );
   return null;
 }
-
-app.whenReady().then(() => {
-  if (!firebaseReady) {
-    showStartupError(
-      "Firebase Admin credentials not found. Application features disabled."
-    );
-  }
-  createWindow();
-  setupAutoUpdates();
-});
-
 function setupAutoUpdates() {
   if (process.env.NODE_ENV === "development") {
     console.log("[Update] Skipped in development");
@@ -138,6 +127,17 @@ function setupAutoUpdates() {
 
   autoUpdater.checkForUpdatesAndNotify();
 }
+
+app.whenReady().then(() => {
+  if (!firebaseReady) {
+    showStartupError(
+      "Firebase Admin credentials not found. Application features disabled."
+    );
+  }
+  createWindow();
+  setupAutoUpdates();
+});
+
 ipcMain.on("login-success", () => {
   if (loginWin) {
     loginWin.close();
