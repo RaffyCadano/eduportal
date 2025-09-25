@@ -21,7 +21,7 @@
       "**/*",
       ".env",
       "!firebase/**",
-      "!**/serviceAccountKey.json"
+      "**/serviceAccountKey.json"
     ],
     "asar": true,
     "win": {

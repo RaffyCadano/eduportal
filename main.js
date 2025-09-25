@@ -8,11 +8,11 @@ const { getDatabase } = require("firebase-admin/database");
 const { getStorage } = require("firebase-admin/storage");
 const { autoUpdater } = require("electron-updater");
 require("dotenv").config(); // load .env if present
+
 const serviceAccount = loadServiceAccount();
 
 let rtdb = null;
 let storage = null;
-
 let firebaseReady = false;
 if (!serviceAccount) {
   console.error("[Firebase] Missing credentials");
@@ -31,22 +31,23 @@ if (!serviceAccount) {
     console.error("[Firebase] Init error:", e.message);
   }
 }
-
 function loadServiceAccount() {
-  // Option 1: Inline JSON via env var
-  if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
+  // Option 2: Path to JSON file via env var
+  if (process.env.FIREBASE_SERVICE_ACCOUNT_FILE) {
     try {
-      console.log(
-        "[Firebase] Using inline JSON from FIREBASE_SERVICE_ACCOUNT_JSON"
-      );
-      return JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+      const p = process.env.FIREBASE_SERVICE_ACCOUNT_FILE;
+      if (fs.existsSync(p)) {
+        console.log("[Firebase] Using service account file:", p);
+        return JSON.parse(fs.readFileSync(p, "utf8"));
+      } else {
+        console.error("Service account file not found:", p);
+      }
     } catch (e) {
-      console.error("Invalid FIREBASE_SERVICE_ACCOUNT_JSON:", e);
+      console.error("Failed reading FIREBASE_SERVICE_ACCOUNT_FILE:", e.message);
     }
   }
-
   console.error(
-    "[Firebase] Service account not provided. Set FIREBASE_SERVICE_ACCOUNT_JSON or FIREBASE_SERVICE_ACCOUNT_FILE."
+    "[Firebase] Service account not provided. Set FIREBASE_SERVICE_ACCOUNT_FILE."
   );
   return null;
 }
