@@ -1,7 +1,7 @@
 {
   "name": "eduportal",
   "productName": "EduPortal",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Electron app with Firebase Admin for managing students, teachers, sections, and subjects.",
   "main": "main.js",
   "scripts": {
@@ -19,9 +19,12 @@
     ],
     "files": [
       "**/*",
+      "!*.env",
+      "!serviceAccountKey.json"
+    ],
+    "extraFiles": [
       ".env",
-      "!firebase/**",
-      "**/serviceAccountKey.json"
+      "serviceAccountKey.json"
     ],
     "asar": true,
     "win": {
