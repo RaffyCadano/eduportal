@@ -7,8 +7,6 @@ const { initializeApp, cert } = require("firebase-admin/app");
 const { getDatabase } = require("firebase-admin/database");
 const { getStorage } = require("firebase-admin/storage");
 require("dotenv").config(); // load .env if present
-const bcrypt = require('bcrypt');
-
 
 console.log("Service file:", process.env.FIREBASE_SERVICE_ACCOUNT_FILE);
 // Secure service account loading (env-based)
@@ -39,26 +37,34 @@ function loadServiceAccount() {
   );
   return null;
 }
-
-function setupAutoUpdates(){
-  if (process.env.NODE_ENV === 'development') return;
+function setupAutoUpdates() {
+  if (process.env.NODE_ENV === "development") {
+    console.log("[Update] Skipped in development");
+    return;
+  }
   autoUpdater.autoDownload = true;
-  autoUpdater.on('checking-for-update', ()=> console.log('[Update] Checking'));
-  autoUpdater.on('update-available', info => console.log('[Update] Available', info.version));
-  autoUpdater.on('update-not-available', ()=> console.log('[Update] No update'));
-  autoUpdater.on('download-progress', p => process.stdout.write(`\r[Update] ${Math.round(p.percent)}%`));
-  autoUpdater.on('update-downloaded', ()=> {
-    console.log('\n[Update] Ready to install');
-    // Optional: prompt user; here install immediately
-    setTimeout(()=> autoUpdater.quitAndInstall(), 1500);
+
+  autoUpdater.on("checking-for-update", () => sendUpdateStatus("checking"));
+  autoUpdater.on("update-available", (info) =>
+    sendUpdateStatus("available", info.version)
+  );
+  autoUpdater.on("update-not-available", () => sendUpdateStatus("none"));
+  autoUpdater.on("download-progress", (p) =>
+    sendUpdateStatus("progress", Math.round(p.percent))
+  );
+  autoUpdater.on("update-downloaded", () => {
+    sendUpdateStatus("downloaded");
+    setTimeout(() => autoUpdater.quitAndInstall(), 2000);
   });
-  autoUpdater.on('error', err => console.error('[Update] Error', err));
+  autoUpdater.on("error", (err) => sendUpdateStatus("error", err.message));
+
   autoUpdater.checkForUpdatesAndNotify();
 }
+
 const serviceAccount = loadServiceAccount();
 if (!serviceAccount) {
   app.whenReady().then(() => {
-      setupAutoUpdates();
+    setupAutoUpdates();
     // Fail fast if missing credentials
     setTimeout(() => app.quit(), 100);
   });
@@ -104,7 +110,7 @@ ipcMain.on("login-success", () => {
     width: 1980,
     height: 1080,
     minWidth: 400,
-    minHeight: 700,
+    minHeight: 600,
     resizable: true,
     frame: false,
     webPreferences: {
@@ -116,8 +122,15 @@ ipcMain.on("login-success", () => {
   dashboardWin.setMenu(null);
   dashboardWin.center();
   dashboardWin.loadFile("pages/main.html");
-  dashboardWin.webContents.openDevTools();
 });
+
+function sendUpdateStatus(state, data) {
+  console.log("[Update]", state, data || "");
+  // Forward to any renderer (login or dashboard)
+  if (dashboardWin)
+    dashboardWin.webContents.send("update-status", { state, data });
+  if (loginWin) loginWin.webContents.send("update-status", { state, data });
+}
 // Listen for request to open login window (logout)
 ipcMain.on("open-login-window", () => {
   // Close all dashboard windows (showing main.html)

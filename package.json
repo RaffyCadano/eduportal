@@ -13,7 +13,7 @@
       {
         "provider": "github",
         "owner": "Raffy Cadano",
-        "repo": "nvians"
+        "repo": "https://github.com/RaffyCadano/nvians.git"
       }
     ],
     "files": [

@@ -47,4 +47,9 @@ contextBridge.exposeInMainWorld("api", {
   // Maintenance / backup
   fullBackup: () => ipcRenderer.invoke('full-backup'),
   resetDatabase: () => ipcRenderer.invoke('reset-database'),
+  subscribe(cb) {
+    if (typeof cb === "function") {
+      ipcRenderer.on("update-status", (_e, msg) => cb(msg));
+    }
+  }
 });
