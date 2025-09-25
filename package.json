@@ -1,7 +1,7 @@
 {
   "name": "eduportal",
   "productName": "EduPortal",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Electron app with Firebase Admin for managing students, teachers, sections, and subjects.",
   "main": "main.js",
   "scripts": {
