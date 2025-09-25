@@ -13,6 +13,10 @@ console.log(
   "Node env:",
   process.env.FIREBASE_SERVICE_ACCOUNT_FILE || "production"
 );
+console.log(
+  "Node env:",
+  process.env.FIREBASE_SERVICE_ACCOUNT_JSON || "production"
+);
 
 const serviceAccount = loadServiceAccount();
 let firebaseReady = false;
@@ -30,6 +34,35 @@ if (!serviceAccount) {
   } catch (e) {
     console.error("[Firebase] Init error:", e.message);
   }
+}
+
+// Secure service account loading (env-based)
+function loadServiceAccount() {
+  // Option 1: Inline JSON via env var (recommended for CI/build)
+  if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
+    try {
+      return JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+    } catch (e) {
+      console.error("Invalid FIREBASE_SERVICE_ACCOUNT_JSON:", e);
+    }
+  }
+  // Option 2: Path to JSON file via env var
+  if (process.env.FIREBASE_SERVICE_ACCOUNT_FILE) {
+    try {
+      const p = process.env.FIREBASE_SERVICE_ACCOUNT_FILE;
+      if (fs.existsSync(p)) {
+        return JSON.parse(fs.readFileSync(p, "utf8"));
+      } else {
+        console.error("Service account file not found:", p);
+      }
+    } catch (e) {
+      console.error("Failed reading FIREBASE_SERVICE_ACCOUNT_FILE:", e);
+    }
+  }
+  console.error(
+    "Service account not provided. Set FIREBASE_SERVICE_ACCOUNT_JSON or FIREBASE_SERVICE_ACCOUNT_FILE."
+  );
+  return null;
 }
 const rtdb = serviceAccount ? getDatabase() : null;
 const storage = serviceAccount ? getStorage() : null;
@@ -76,34 +109,6 @@ function showStartupError(msg) {
   );
 }
 
-// Secure service account loading (env-based)
-function loadServiceAccount() {
-  // Option 1: Inline JSON via env var (recommended for CI/build)
-  if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
-    try {
-      return JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
-    } catch (e) {
-      console.error("Invalid FIREBASE_SERVICE_ACCOUNT_JSON:", e);
-    }
-  }
-  // Option 2: Path to JSON file via env var
-  if (process.env.FIREBASE_SERVICE_ACCOUNT_FILE) {
-    try {
-      const p = process.env.FIREBASE_SERVICE_ACCOUNT_FILE;
-      if (fs.existsSync(p)) {
-        return JSON.parse(fs.readFileSync(p, "utf8"));
-      } else {
-        console.error("Service account file not found:", p);
-      }
-    } catch (e) {
-      console.error("Failed reading FIREBASE_SERVICE_ACCOUNT_FILE:", e);
-    }
-  }
-  console.error(
-    "Service account not provided. Set FIREBASE_SERVICE_ACCOUNT_JSON or FIREBASE_SERVICE_ACCOUNT_FILE."
-  );
-  return null;
-}
 function setupAutoUpdates() {
   if (process.env.NODE_ENV === "development") {
     console.log("[Update] Skipped in development");
