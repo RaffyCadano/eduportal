@@ -138,9 +138,10 @@ app.whenReady().then(() => {
     showStartupError(
       "Firebase Admin credentials not found. Application features disabled."
     );
+  } else {
+    createWindow();
+    setupAutoUpdates();
   }
-  createWindow();
-  setupAutoUpdates();
 });
 
 ipcMain.on("login-success", () => {
