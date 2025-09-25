@@ -38,6 +38,15 @@ if (!serviceAccount) {
 
 // Secure service account loading (env-based)
 function loadServiceAccount() {
+  // Option 1: Inline JSON via env var (recommended for CI/build)
+  if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
+    try {
+      return JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+    } catch (e) {
+      console.error("Invalid FIREBASE_SERVICE_ACCOUNT_JSON:", e);
+    }
+  }
+  // Option 2: Path to JSON file via env var
   if (process.env.FIREBASE_SERVICE_ACCOUNT_FILE) {
     try {
       const p = process.env.FIREBASE_SERVICE_ACCOUNT_FILE;
