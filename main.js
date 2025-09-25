@@ -14,6 +14,23 @@ console.log(
   process.env.FIREBASE_SERVICE_ACCOUNT_FILE || "production"
 );
 
+const serviceAccount = loadServiceAccount();
+let firebaseReady = false;
+if (!serviceAccount) {
+  console.error("[Firebase] Missing credentials");
+} else {
+  try {
+    initializeApp({
+      credential: cert(serviceAccount),
+      databaseURL: process.env.FIREBASE_DATABASE_URL,
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    });
+    firebaseReady = true;
+    console.log("[Firebase] Initialized");
+  } catch (e) {
+    console.error("[Firebase] Init error:", e.message);
+  }
+}
 const rtdb = serviceAccount ? getDatabase() : null;
 const storage = serviceAccount ? getStorage() : null;
 
@@ -109,24 +126,6 @@ function setupAutoUpdates() {
   autoUpdater.on("error", (err) => sendUpdateStatus("error", err.message));
 
   autoUpdater.checkForUpdatesAndNotify();
-}
-
-const serviceAccount = loadServiceAccount();
-let firebaseReady = false;
-if (!serviceAccount) {
-  console.error("[Firebase] Missing credentials");
-} else {
-  try {
-    initializeApp({
-      credential: cert(serviceAccount),
-      databaseURL: process.env.FIREBASE_DATABASE_URL,
-      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-    });
-    firebaseReady = true;
-    console.log("[Firebase] Initialized");
-  } catch (e) {
-    console.error("[Firebase] Init error:", e.message);
-  }
 }
 
 app.whenReady().then(() => {
