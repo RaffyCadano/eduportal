@@ -1,5 +1,4 @@
 const { contextBridge, ipcRenderer } = require("electron");
-
 contextBridge.exposeInMainWorld("api", {
   // Student CRUD
   getStudents: () => ipcRenderer.invoke("get-students"),
@@ -11,11 +10,13 @@ contextBridge.exposeInMainWorld("api", {
 
   // Section CRUD
   getSections: () => ipcRenderer.invoke("get-sections"),
-  updateStudentSection: (data) => ipcRenderer.invoke("update-student-section", data),
+  updateStudentSection: (data) =>
+    ipcRenderer.invoke("update-student-section", data),
 
   // Credentials
   getCredentials: () => ipcRenderer.invoke("get-credentials"),
-  updateCredentialPassword: (data) => ipcRenderer.invoke("update-credential-password", data),
+  updateCredentialPassword: (data) =>
+    ipcRenderer.invoke("update-credential-password", data),
 
   // Entity creation & deletion
   createEntity: (payload) => ipcRenderer.invoke("create-entity", payload),
@@ -35,21 +36,28 @@ contextBridge.exposeInMainWorld("api", {
   getTeacher: async (idOrName) => {
     const res = await ipcRenderer.invoke("get-teachers");
     if (res && res.success && Array.isArray(res.teachers)) {
-      return res.teachers.find(t => t.id === idOrName || t.name === idOrName || t.username === idOrName) || null;
+      return (
+        res.teachers.find(
+          (t) =>
+            t.id === idOrName || t.name === idOrName || t.username === idOrName
+        ) || null
+      );
     }
     return null;
   },
-  updateTeacherPassword: ({ username, newPassword }) => ipcRenderer.invoke("update-credential-password", { username, newPassword }),
+  updateTeacherPassword: ({ username, newPassword }) =>
+    ipcRenderer.invoke("update-credential-password", { username, newPassword }),
   // Subjects & assignments
-  getSubjects: () => ipcRenderer.invoke('get-subjects'),
-  addSubject: (name) => ipcRenderer.invoke('add-subject', { name }),
-  updateSectionSubjects: (payload) => ipcRenderer.invoke('update-section-subjects', payload),
+  getSubjects: () => ipcRenderer.invoke("get-subjects"),
+  addSubject: (name) => ipcRenderer.invoke("add-subject", { name }),
+  updateSectionSubjects: (payload) =>
+    ipcRenderer.invoke("update-section-subjects", payload),
   // Maintenance / backup
-  fullBackup: () => ipcRenderer.invoke('full-backup'),
-  resetDatabase: () => ipcRenderer.invoke('reset-database'),
-  subscribe(cb) {
+  fullBackup: () => ipcRenderer.invoke("full-backup"),
+  resetDatabase: () => ipcRenderer.invoke("reset-database"),
+  sendUpdateStatus(cb) {
     if (typeof cb === "function") {
       ipcRenderer.on("update-status", (_e, msg) => cb(msg));
     }
-  }
+  },
 });

@@ -6,9 +6,59 @@ const fs = require("fs");
 const { initializeApp, cert } = require("firebase-admin/app");
 const { getDatabase } = require("firebase-admin/database");
 const { getStorage } = require("firebase-admin/storage");
+const { autoUpdater } = require("electron-updater"); //
 require("dotenv").config(); // load .env if present
+console.log("App starting...");
+console.log(
+  "Node env:",
+  process.env.FIREBASE_SERVICE_ACCOUNT_FILE || "production"
+);
 
-console.log("Service file:", process.env.FIREBASE_SERVICE_ACCOUNT_FILE);
+const rtdb = serviceAccount ? getDatabase() : null;
+const storage = serviceAccount ? getStorage() : null;
+
+function createWindow() {
+  loginWin = new BrowserWindow({
+    width: 400,
+    height: 600,
+    minWidth: 400,
+    minHeight: 600,
+    maxWidth: 1920,
+    maxHeight: 1080,
+    resizable: false,
+    frame: false,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js"),
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+  });
+  loginWin.setMenu(null);
+  loginWin.loadFile("index.html");
+}
+
+function showStartupError(msg) {
+  const win = new BrowserWindow({
+    width: 420,
+    height: 260,
+    resizable: false,
+    minimizable: false,
+    maximizable: false,
+    title: "Startup Error",
+    webPreferences: { contextIsolation: true },
+  });
+  win.setMenu(null);
+  win.loadURL(
+    "data:text/html," +
+      encodeURIComponent(`<body style="font-family:system-ui;padding:18px">
+      <h3 style="margin:0 0 8px;color:#c00">Startup Error</h3>
+      <p style="font-size:14px;line-height:1.4">${msg}</p>
+      <p style="font-size:12px;color:#555">Set FIREBASE_SERVICE_ACCOUNT_FILE or FIREBASE_SERVICE_ACCOUNT_JSON and restart.</p>
+      <button onclick="window.close()" style="padding:6px 14px;font-size:13px;">Close</button>
+    </body>`)
+  );
+}
+
 // Secure service account loading (env-based)
 function loadServiceAccount() {
   // Option 1: Inline JSON via env var (recommended for CI/build)
@@ -62,45 +112,33 @@ function setupAutoUpdates() {
 }
 
 const serviceAccount = loadServiceAccount();
+let firebaseReady = false;
 if (!serviceAccount) {
-  app.whenReady().then(() => {
-    setupAutoUpdates();
-    // Fail fast if missing credentials
-    setTimeout(() => app.quit(), 100);
-  });
+  console.error("[Firebase] Missing credentials");
 } else {
-  initializeApp({
-    credential: cert(serviceAccount),
-    databaseURL:
-      process.env.FIREBASE_DATABASE_URL ||
-      "https://nvians-default-rtdb.asia-southeast1.firebasedatabase.app",
-    storageBucket:
-      process.env.FIREBASE_STORAGE_BUCKET || "nvians.firebasestorage.app",
-  });
+  try {
+    initializeApp({
+      credential: cert(serviceAccount),
+      databaseURL: process.env.FIREBASE_DATABASE_URL,
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    });
+    firebaseReady = true;
+    console.log("[Firebase] Initialized");
+  } catch (e) {
+    console.error("[Firebase] Init error:", e.message);
+  }
 }
 
-const rtdb = serviceAccount ? getDatabase() : null;
-const storage = serviceAccount ? getStorage() : null;
+app.whenReady().then(() => {
+  if (!firebaseReady) {
+    showStartupError(
+      "Firebase Admin credentials not found. Application features disabled."
+    );
+  }
+  createWindow();
+  setupAutoUpdates();
+});
 
-function createWindow() {
-  loginWin = new BrowserWindow({
-    width: 400,
-    height: 600,
-    minWidth: 400,
-    minHeight: 600,
-    maxWidth: 1920,
-    maxHeight: 1080,
-    resizable: false,
-    frame: false,
-    webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
-      nodeIntegration: false,
-      contextIsolation: true,
-    },
-  });
-  loginWin.setMenu(null);
-  loginWin.loadFile("index.html");
-}
 ipcMain.on("login-success", () => {
   if (loginWin) {
     loginWin.close();
@@ -184,8 +222,6 @@ ipcMain.handle(
     }
   }
 );
-
-app.whenReady().then(createWindow);
 
 // Window control IPC handlers
 ipcMain.on("close-window", (event) => {
@@ -622,6 +658,8 @@ ipcMain.handle("get-sections", async () => {
 });
 // IPC handler to get teachers (Realtime Database)
 ipcMain.handle("get-teachers", async () => {
+  if (!firebaseReady || !rtdb)
+    return { success: false, error: "Database unavailable", teachers: [] };
   try {
     const ref = rtdb.ref("teachers");
     const snapshot = await ref.once("value");
@@ -653,6 +691,8 @@ ipcMain.handle("get-teachers", async () => {
 
 // IPC handler to get students (Realtime Database)
 ipcMain.handle("get-students", async () => {
+  if (!firebaseReady || !rtdb)
+    return { success: false, error: "Database unavailable", teachers: [] };
   try {
     const ref = rtdb.ref("students");
     const snapshot = await ref.once("value");

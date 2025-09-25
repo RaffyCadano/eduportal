@@ -13,7 +13,7 @@
       {
         "provider": "github",
         "owner": "Raffy Cadano",
-        "repo": "https://github.com/RaffyCadano/nvians.git"
+        "repo": "nvians"
       }
     ],
     "files": [
@@ -28,14 +28,8 @@
         "nsis"
       ],
       "icon": "icons/icon.ico"
-    },
-    "mac": {
-      "icon": "icons/icon.png"
-    },
-    "linux": {
-      "icon": "icons/icon.png",
-      "category": "Education"
     }
+    
   },
   "author": "Raffy Cadano",
   "dependencies": {

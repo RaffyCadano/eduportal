@@ -542,7 +542,7 @@
                 error: m => setBanner(`Update error: ${m.data}`),
             };
 
-            window.updateStatus.subscribe(msg => {
+            window.api.sendUpdateStatus(msg => {
                 if (handlers[msg.state]) handlers[msg.state](msg);
             });
         })();
