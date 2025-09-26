@@ -55,11 +55,7 @@ contextBridge.exposeInMainWorld("api", {
   // Maintenance / backup
   fullBackup: () => ipcRenderer.invoke("full-backup"),
   resetDatabase: () => ipcRenderer.invoke("reset-database"),
-  sendUpdateStatus(cb) {
-    if (typeof cb === "function") {
-      ipcRenderer.on("update-status", (_e, msg) => cb(msg));
-    }
-  },
-  getAppVersion: () => ipcRenderer.invoke("get-app-version"),
-  checkForUpdates: () => ipcRenderer.send("check-for-updates"),
+  checkForUpdates: () => ipcRenderer.send('check-for-updates'),
+  sendUpdateStatus: (cb) => ipcRenderer.on('update-status', (event, msg) => cb(msg)),
+  getAppVersion: () => ipcRenderer.invoke('get-app-version')
 });

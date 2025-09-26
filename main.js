@@ -154,6 +154,15 @@ ipcMain.on("login-success", () => {
   dashboardWin.setMenu(null);
   dashboardWin.center();
   dashboardWin.loadFile("pages/main.html");
+  dashboardWin.webContents.on("before-input-event", (event, input) => {
+    const isDevToolsShortcut =
+      (input.control && input.shift && input.key.toLowerCase() === "i") ||
+      (input.meta && input.alt && input.key.toLowerCase() === "i");
+    if (isDevToolsShortcut) {
+      dashboardWin.webContents.openDevTools({ mode: "detach" });
+      event.preventDefault();
+    }
+  });
 });
 
 function sendUpdateStatus(state, data) {

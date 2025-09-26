@@ -1,7 +1,7 @@
 {
   "name": "eduportal",
   "productName": "EduPortal",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Managing students, teachers, sections, and subjects.",
   "main": "main.js",
   "scripts": {
@@ -13,7 +13,7 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "Raffy Cadano",
+        "owner": "RaffyCadano",
         "repo": "eduportal"
       }
     ],

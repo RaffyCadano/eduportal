@@ -168,8 +168,9 @@
             showNotification("Checking for updates...", "info", 2500);
             if (window.api && window.api.checkForUpdates) {
                 window.api.checkForUpdates();
+                console.log('Update check initiated.');
             } else {
-                alert('Update check not available.');
+                console.log('Update check not available.');
             }
         });
         // Notification System
