@@ -96,7 +96,6 @@ function showStartupError(msg) {
 
 function setupAutoUpdates() {
   if (process.env.NODE_ENV === "development") {
-    console.log("[Update] Skipped in development");
     return;
   }
   autoUpdater.autoDownload = true;
@@ -128,8 +127,7 @@ app.whenReady().then(() => {
     setupAutoUpdates();
   }
 });
-ipcMain.handle('get-app-version', () => app.getVersion());
-console.log("App version:", app.getVersion());
+ipcMain.handle("get-app-version", () => app.getVersion());
 ipcMain.on("login-success", () => {
   if (loginWin) {
     loginWin.close();
@@ -159,8 +157,6 @@ ipcMain.on("login-success", () => {
 });
 
 function sendUpdateStatus(state, data) {
-  console.log("[Update]", state, data || "");
-  // Forward to any renderer (login or dashboard)
   if (dashboardWin)
     dashboardWin.webContents.send("update-status", { state, data });
   if (loginWin) loginWin.webContents.send("update-status", { state, data });
@@ -218,7 +214,11 @@ ipcMain.handle(
     }
   }
 );
-
+ipcMain.on("check-for-updates", () => {
+  if (autoUpdater) {
+    autoUpdater.checkForUpdates();
+  }
+});
 // Window control IPC handlers
 ipcMain.on("close-window", (event) => {
   const win = BrowserWindow.getFocusedWindow();

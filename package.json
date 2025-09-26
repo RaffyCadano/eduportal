@@ -1,7 +1,7 @@
 {
   "name": "eduportal",
   "productName": "EduPortal",
-  "version": "1.0.2",
+  "version": "1.0.0",
   "description": "Managing students, teachers, sections, and subjects.",
   "main": "main.js",
   "scripts": {

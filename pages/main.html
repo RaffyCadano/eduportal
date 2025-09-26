@@ -17,9 +17,17 @@
             style="font-family: 'Poppins', Arial, sans-serif; color: #111;">
             <i class="bi bi-mortarboard-fill me-2" style="font-size: 1.5rem; color: #111;"></i>
             EduPortal
-            <div class="me-3 ps-2" id="appVersion" style="font-size:0.9rem; color:#888; font-weight:400; margin-left:8px;"></div>
+            <div class="me-3 ps-2" id="appVersion"
+                style="font-size:0.9rem; color:#888; font-weight:400; margin-left:8px;"></div>
         </span>
         <div class="d-flex align-items-center" style="gap:0;">
+            <!-- Add this button to your navbar, next to the close button -->
+            <button id="check-update-btn"
+                class="btn btn-sm bg-success text-white px-2 p-0 d-flex align-items-center justify-content-center window-btn"
+                title="Check for Updates"
+                style="width: 100ssspx; height: 28px; background: transparent; color: #444; border: none; margin-right: 8px; -webkit-app-region: no-drag;">
+                Check for Updates
+            </button>
             <button id="main-minimize-btn"
                 class="btn btn-sm p-0 d-flex align-items-center justify-content-center window-btn" title="Minimize"
                 style="width: 28px; height: 28px; background: transparent; color: #111; border: none; -webkit-app-region: no-drag;">
@@ -156,6 +164,14 @@
         });
     </script>
     <script>
+        document.getElementById('check-update-btn').addEventListener('click', function () {
+            showNotification("Checking for updates...", "info", 2500);
+            if (window.api && window.api.checkForUpdates) {
+                window.api.checkForUpdates();
+            } else {
+                alert('Update check not available.');
+            }
+        });
         // Notification System
         function showNotification(message, type = "success", duration = 4000) {
             let container = document.getElementById("notificationContainer");
