@@ -170,6 +170,14 @@ function sendUpdateStatus(state, data) {
     dashboardWin.webContents.send("update-status", { state, data });
   if (loginWin) loginWin.webContents.send("update-status", { state, data });
 }
+autoUpdater.on("update-available", (info) =>
+  sendUpdateStatus("available", info.version)
+);
+autoUpdater.on("download-progress", (p) =>
+  sendUpdateStatus("progress", Math.round(p.percent))
+);
+autoUpdater.on("update-downloaded", () => sendUpdateStatus("downloaded"));
+autoUpdater.on("error", (err) => sendUpdateStatus("error", err.message));
 // Listen for request to open login window (logout)
 ipcMain.on("open-login-window", () => {
   // Close all dashboard windows (showing main.html)
@@ -228,6 +236,36 @@ ipcMain.on("check-for-updates", () => {
     autoUpdater.checkForUpdates();
   }
 });
+// Assign subjects to teacher
+ipcMain.handle(
+  "assign-subjects-to-teacher",
+  async (event, { teacher, subjects }) => {
+    try {
+      if (!teacher || !Array.isArray(subjects)) {
+        return { success: false, error: "Missing teacher or subjects" };
+      }
+      // Find teacher by name
+      const teachersRef = rtdb.ref("teachers");
+      const teachersSnapshot = await teachersRef.once("value");
+      const teachers = teachersSnapshot.val() || {};
+      let targetKey = null;
+      for (const [key, t] of Object.entries(teachers)) {
+        if (t.name === teacher) {
+          targetKey = key;
+          break;
+        }
+      }
+      if (!targetKey) {
+        return { success: false, error: "Teacher not found" };
+      }
+      // Update subjects
+      await teachersRef.child(targetKey).child("subjects").set(subjects);
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  }
+);
 // Window control IPC handlers
 ipcMain.on("close-window", (event) => {
   const win = BrowserWindow.getFocusedWindow();

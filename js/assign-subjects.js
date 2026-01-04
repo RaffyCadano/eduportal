@@ -52,7 +52,7 @@
             <ol class="breadcrumb app-breadcrumb">
               <li class="breadcrumb-item"><a href="#" id="dashboardBreadcrumb"><i class="bi bi-house-door-fill"></i><span>Dashboard</span></a></li>
               <li class="breadcrumb-item"><a href="#" id="subjectsBreadcrumb"><i class="bi bi-book"></i><span>Subjects</span></a></li>
-              <li class="breadcrumb-item active" aria-current="page"><i class='bi bi-link-45deg'></i><span> Assign</span></li>
+              <li class="breadcrumb-item active" aria-current="page"><i class='bi bi-link-45deg'></i><span> Assign Subjects to Section</span></li>
             </ol>
           </nav>
           <div class='card p-4 border' style='border:none; border-radius:1.5em;'>
@@ -61,7 +61,7 @@
                 <div>
                   <h3 class='fw-bold mb-0'>
                     <i class='bi bi-journal-text text-primary me-2'></i>
-                    Assign Subjects
+                    Assign Subjects to Section
                   </h3>
                   <div class='small text-muted mt-1'>Attach subjects to sections quickly or use bulk mode for speed.</div>
                 </div>

@@ -90,7 +90,9 @@
                 </button>
                 <div id="subjectsSubmenu" style="display: none; margin-left: 32px;">
                     <a class="nav-link" href="#" id="classesWithSubjectsLink">Classes with Subjects</a>
-                    <a class="nav-link" href="#" id="assignSubjectsLink">Assign Subjects</a>
+                    <a class="nav-link" href="#" id="teacherWithSubjectsLink">Teacher with Subjects</a>
+                    <a class="nav-link" href="#" id="assignSubjectsLink">Assign Subjects to Section</a>
+                    <a class="nav-link" href="#" id="assignSubjectsToTeacherLink">Assign Subjects to Teacher</a>
                 </div>
             </div>
             <a class="nav-link" href="#" id="settingsLink"><i class="bi bi-gear me-2"></i>Settings</a>
@@ -149,13 +151,15 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/teacher-with-subjects.js"></script>
     <script src="../js/all-students.js"></script>
     <script src="../js/dashboard.js"></script>
     <script src="../js/all-credentials.js"></script>
     <script src="../js/all-teachers.js"></script>
     <script src="../js/all-sections.js"></script>
-    <script src="../js/assign-subjects.js"></script>
     <script src="../js/classes-with-subjects.js"></script>
+    <script src="../js/assign-subjects.js"></script>
+    <script src="../js/assign-subjects-to-teacher.js"></script>
     <script src="../js/settings.js"></script>
     <script>
         window.api.getAppVersion().then(version => {
@@ -290,9 +294,17 @@
         document.getElementById("classesWithSubjectsLink").addEventListener("click", function () {
             setLastPage("classesWithSubjects");
         });
+        document.getElementById("teacherWithSubjectsLink").addEventListener("click", function () {
+            setLastPage("teacherWithSubjects");
+        });
+
         document.getElementById("assignSubjectsLink").addEventListener("click", function () {
             setLastPage("assignSubjects");
         });
+        document.getElementById("assignSubjectsToTeacherLink").addEventListener("click", function () {
+            setLastPage("assignSubjectsToTeacher");
+        });
+
         document.getElementById("settingsLink").addEventListener("click", function () {
             setLastPage("settings");
         });
@@ -314,7 +326,7 @@
                     document.getElementById("sectionsSubmenu").style.display = "block";
                     document.getElementById("sectionsDropdownIcon").className = "bi bi-dash float-end";
                 }
-                if (["classesWithSubjects", "assignSubjects"].includes(lastPage)) {
+                if (["classesWithSubjects", "assignSubjects", "assignSubjectsToTeacher", "teacherWithSubjects"].includes(lastPage)) {
                     document.getElementById("subjectsSubmenu").style.display = "block";
                     document.getElementById("subjectsDropdownIcon").className = "bi bi-dash float-end";
                 }
@@ -350,8 +362,15 @@
                 else if (lastPage === "classesWithSubjects") {
                     document.getElementById("classesWithSubjectsLink").click();
                 }
+                else if (lastPage === "teacherWithSubjects") {
+                    document.getElementById("teacherWithSubjectsLink").click();
+                }
+
                 else if (lastPage === "assignSubjects") {
                     document.getElementById("assignSubjectsLink").click();
+                }
+                else if (lastPage === "assignSubjectsToTeacher") {
+                    document.getElementById("assignSubjectsToTeacherLink").click();
                 }
                 else if (lastPage === "settings") {
                     document.getElementById("settingsLink").click();
@@ -429,6 +448,17 @@
                 }
             });
         document
+            .getElementById("teacherWithSubjectsLink")
+            .addEventListener("click", function (e) {
+                e.preventDefault();
+                if (window.openTeacherWithSubjectsPage) {
+                    openTeacherWithSubjectsPage();
+                } else {
+                    showNotification("Loading teacher with subjects...", "info", 1800);
+                    setTimeout(() => { if (window.openTeacherWithSubjectsPage) openTeacherWithSubjectsPage(); }, 250);
+                }
+            });
+        document
             .getElementById("assignSubjectsLink")
             .addEventListener("click", function (e) {
                 e.preventDefault();
@@ -439,6 +469,15 @@
                     setTimeout(() => { if (window.openAssignSubjectsPage) openAssignSubjectsPage(); }, 250);
                 }
             });
+        document.getElementById("assignSubjectsToTeacherLink").addEventListener("click", function (e) {
+            e.preventDefault();
+            if (window.openAssignSubjectsToTeacherPage) {
+                openAssignSubjectsToTeacherPage();
+            } else {
+                showNotification("Loading assign subjects to teacher module...", "info", 2000);
+                setTimeout(() => { if (window.openAssignSubjectsToTeacherPage) openAssignSubjectsToTeacherPage(); }, 250);
+            }
+        });
         // Sections sidebar submenu functionality
         const sectionsDropdownBtn = document.getElementById("sectionsDropdownBtn");
         const sectionsSubmenu = document.getElementById("sectionsSubmenu");

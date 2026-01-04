@@ -78,25 +78,25 @@ document
         });
 
       // Attach search event listeners for real-time filtering (separate from table rendering)
-      const searchInput = document.getElementById('sectionsSearchInput');
-      const clearBtn = document.getElementById('clearSectionsSearchBtn');
+      const searchInput = document.getElementById("sectionsSearchInput");
+      const clearBtn = document.getElementById("clearSectionsSearchBtn");
 
       function applySectionsFilter() {
-        const term = (searchInput?.value || '').toLowerCase().trim();
+        const term = (searchInput?.value || "").toLowerCase().trim();
         window.sectionsSearchTerm = term;
         window.sectionsPage = 1;
-        if (typeof renderSectionsPage === 'function') {
+        if (typeof renderSectionsPage === "function") {
           renderSectionsPage();
         }
       }
 
       if (searchInput) {
-        searchInput.addEventListener('input', applySectionsFilter);
+        searchInput.addEventListener("input", applySectionsFilter);
       }
       if (clearBtn) {
-        clearBtn.addEventListener('click', () => {
+        clearBtn.addEventListener("click", () => {
           if (searchInput) {
-            searchInput.value = '';
+            searchInput.value = "";
             applySectionsFilter();
             searchInput.focus();
           }
@@ -106,27 +106,31 @@ document
   });
 
 // New Section link handler (was missing, causing link not to work)
-const newSectionLinkEl = document.getElementById('newSectionLink');
+const newSectionLinkEl = document.getElementById("newSectionLink");
 if (newSectionLinkEl) {
-  newSectionLinkEl.addEventListener('click', function(e){
+  newSectionLinkEl.addEventListener("click", function (e) {
     e.preventDefault();
     // Activate sidebar states
-    document.querySelectorAll('.sidebar .nav-link').forEach(l=>l.classList.remove('active'));
-    newSectionLinkEl.classList.add('active');
-    const sectionsDropdownBtn = document.getElementById('sectionsDropdownBtn');
-    if (sectionsDropdownBtn) sectionsDropdownBtn.classList.add('active');
+    document
+      .querySelectorAll(".sidebar .nav-link")
+      .forEach((l) => l.classList.remove("active"));
+    newSectionLinkEl.classList.add("active");
+    const sectionsDropdownBtn = document.getElementById("sectionsDropdownBtn");
+    if (sectionsDropdownBtn) sectionsDropdownBtn.classList.add("active");
 
-    const mainContent = document.querySelector('.main-content .container-fluid');
+    const mainContent = document.querySelector(
+      ".main-content .container-fluid"
+    );
     if (!mainContent) return;
 
     // Ensure teacher helper modal exists only once (avoid duplicates if user re-enters form rapidly)
-    const existingHelper = document.getElementById('sectionTeacherHelperModal');
+    const existingHelper = document.getElementById("sectionTeacherHelperModal");
     if (!existingHelper) {
-      const helper = document.createElement('div');
-      helper.id = 'sectionTeacherHelperModal';
-      helper.className = 'modal fade';
+      const helper = document.createElement("div");
+      helper.id = "sectionTeacherHelperModal";
+      helper.className = "modal fade";
       helper.tabIndex = -1;
-      helper.setAttribute('aria-hidden','true');
+      helper.setAttribute("aria-hidden", "true");
       helper.innerHTML = `
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
@@ -144,23 +148,31 @@ if (newSectionLinkEl) {
           </div>
         </div>`;
       document.body.appendChild(helper);
-      setTimeout(()=>{
-        const goBtn = document.getElementById('goCreateTeacherBtn');
+      setTimeout(() => {
+        const goBtn = document.getElementById("goCreateTeacherBtn");
         if (goBtn) {
-          goBtn.addEventListener('click',()=>{
+          goBtn.addEventListener("click", () => {
             // Expand teachers submenu and navigate to Add Teachers if present
-            const teachersDropdownBtn = document.getElementById('teachersDropdownBtn');
-            const teachersSubmenu = document.getElementById('teachersSubmenu');
-            if (teachersDropdownBtn && teachersSubmenu && teachersSubmenu.style.display === 'none') {
+            const teachersDropdownBtn = document.getElementById(
+              "teachersDropdownBtn"
+            );
+            const teachersSubmenu = document.getElementById("teachersSubmenu");
+            if (
+              teachersDropdownBtn &&
+              teachersSubmenu &&
+              teachersSubmenu.style.display === "none"
+            ) {
               teachersDropdownBtn.click();
             }
-            const addTeachersLink = document.getElementById('addTeachersLink');
+            const addTeachersLink = document.getElementById("addTeachersLink");
             if (addTeachersLink) addTeachersLink.click();
-            const modalEl = document.getElementById('sectionTeacherHelperModal');
+            const modalEl = document.getElementById(
+              "sectionTeacherHelperModal"
+            );
             if (modalEl) bootstrap.Modal.getOrCreateInstance(modalEl).hide();
           });
         }
-      },300);
+      }, 300);
     }
 
     mainContent.innerHTML = `
@@ -215,14 +227,16 @@ if (newSectionLinkEl) {
 
     // Populate teachers dropdown
     if (window.api && window.api.getTeachers) {
-      window.api.getTeachers().then(result => {
-        const sel = document.getElementById('sectionTeacher');
+      window.api.getTeachers().then((result) => {
+        const sel = document.getElementById("sectionTeacher");
         if (!sel) return;
         if (result.success && Array.isArray(result.teachers)) {
-          result.teachers.forEach(t => {
-            const name = t.name || '';
-            if (!name) return;
-            const opt = document.createElement('option');
+          // Filter unique teacher names
+          const uniqueNames = [
+            ...new Set(result.teachers.map((t) => t.name).filter(Boolean)),
+          ];
+          uniqueNames.forEach((name) => {
+            const opt = document.createElement("option");
             opt.value = name;
             opt.textContent = name;
             sel.appendChild(opt);
@@ -230,23 +244,25 @@ if (newSectionLinkEl) {
         }
         if (sel.options.length <= 1) {
           // Show helper modal only if not already visible
-          const helperModal = document.getElementById('sectionTeacherHelperModal');
+          const helperModal = document.getElementById(
+            "sectionTeacherHelperModal"
+          );
           if (helperModal) {
             const instance = bootstrap.Modal.getOrCreateInstance(helperModal);
             // Prevent flashing a second instance
-            if (!helperModal.classList.contains('show')) instance.show();
+            if (!helperModal.classList.contains("show")) instance.show();
           }
         }
       });
     }
 
     // Submit handler for creating section
-    const form = document.getElementById('createSectionForm');
+    const form = document.getElementById("createSectionForm");
     if (form) {
-      form.addEventListener('submit', function(ev){
+      form.addEventListener("submit", function (ev) {
         ev.preventDefault();
         const submitBtn = form.querySelector('button[type="submit"]');
-        const originalHtml = submitBtn ? submitBtn.innerHTML : '';
+        const originalHtml = submitBtn ? submitBtn.innerHTML : "";
         if (submitBtn) {
           submitBtn.disabled = true;
           submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Creating...`;
@@ -255,40 +271,72 @@ if (newSectionLinkEl) {
         const grade = form.gradeLevel.value.trim();
         const teacher = form.sectionTeacher.value.trim();
         if (!sectionName || !grade || !teacher) {
-          showNotification('Please fill all required fields','error',4000);
-          if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalHtml; }
+          showNotification("Please fill all required fields", "error", 4000);
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalHtml;
+          }
           return;
         }
         // Fetch existing sections to enforce uniqueness
         if (window.api && window.api.getSections) {
-          window.api.getSections().then(secRes => {
+          window.api.getSections().then((secRes) => {
             let duplicate = false;
             if (secRes.success && Array.isArray(secRes.sections)) {
               const target = sectionName.toLowerCase();
-              duplicate = secRes.sections.some(s => (s.name || '').toLowerCase() === target);
+              duplicate = secRes.sections.some(
+                (s) => (s.name || "").toLowerCase() === target
+              );
             }
             if (duplicate) {
-              showNotification(`Section name "${sectionName}" already exists.`,'error',5000);
-              if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalHtml; }
+              showNotification(
+                `Section name "${sectionName}" already exists.`,
+                "error",
+                5000
+              );
+              if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHtml;
+              }
               return;
             }
             // Create section
             if (window.api && window.api.createEntity) {
               const payload = { name: sectionName, gradeLevel: grade, teacher };
-              window.api.createEntity({ type: 'sections', data: payload }).then(createRes => {
-                if (createRes.success) {
-                  showNotification('Section created successfully!','success',4000);
-                  // Navigate back to All Sections
-                  const allLink = document.getElementById('allSectionsLink');
-                  if (allLink) allLink.click();
-                } else {
-                  showNotification('Failed to create section: ' + (createRes.error || 'Unknown error'),'error',6000);
-                }
-              }).catch(err => {
-                showNotification('Error creating section: ' + err,'error',6000);
-              }).finally(()=>{
-                if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalHtml; }
-              });
+              window.api
+                .createEntity({ type: "sections", data: payload })
+                .then((createRes) => {
+                  if (createRes.success) {
+                    showNotification(
+                      "Section created successfully!",
+                      "success",
+                      4000
+                    );
+                    // Navigate back to All Sections
+                    const allLink = document.getElementById("allSectionsLink");
+                    if (allLink) allLink.click();
+                  } else {
+                    showNotification(
+                      "Failed to create section: " +
+                        (createRes.error || "Unknown error"),
+                      "error",
+                      6000
+                    );
+                  }
+                })
+                .catch((err) => {
+                  showNotification(
+                    "Error creating section: " + err,
+                    "error",
+                    6000
+                  );
+                })
+                .finally(() => {
+                  if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalHtml;
+                  }
+                });
             }
           });
         }
@@ -300,13 +348,15 @@ if (newSectionLinkEl) {
 // Helper: close any open Bootstrap modals to avoid stacking
 function closeAllModals() {
   try {
-    const openModals = document.querySelectorAll('.modal.show');
+    const openModals = document.querySelectorAll(".modal.show");
     openModals.forEach((modalEl) => {
-      const instance = bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl);
+      const instance =
+        bootstrap.Modal.getInstance(modalEl) ||
+        bootstrap.Modal.getOrCreateInstance(modalEl);
       instance.hide();
     });
   } catch (err) {
-    console.warn('closeAllModals encountered an error:', err);
+    console.warn("closeAllModals encountered an error:", err);
   }
 }
 
@@ -329,7 +379,6 @@ function loadAllSections() {
     window.api
       .fixOrphanedTeachers()
       .then((fixResult) => {
-
         // Now load sections
         loadSectionsData();
       })
@@ -353,13 +402,18 @@ function loadSectionsData() {
       .then((result) => {
         if (result.success && Array.isArray(result.sections)) {
           // Always load student counts, then render paginated view
-          loadStudentCountsForSections(result.sections).then((sectionsWithCounts) => {
-            window.sectionsAll = sectionsWithCounts || [];
-            if (typeof window.sectionsPage === 'undefined') window.sectionsPage = 1;
-            if (typeof window.sectionsPageSize === 'undefined') window.sectionsPageSize = 25;
-            if (typeof window.sectionsSearchTerm === 'undefined') window.sectionsSearchTerm = '';
-            renderSectionsPage();
-          });
+          loadStudentCountsForSections(result.sections).then(
+            (sectionsWithCounts) => {
+              window.sectionsAll = sectionsWithCounts || [];
+              if (typeof window.sectionsPage === "undefined")
+                window.sectionsPage = 1;
+              if (typeof window.sectionsPageSize === "undefined")
+                window.sectionsPageSize = 25;
+              if (typeof window.sectionsSearchTerm === "undefined")
+                window.sectionsSearchTerm = "";
+              renderSectionsPage();
+            }
+          );
         } else {
           container.innerHTML = `
                             <div class='text-center py-5'>
@@ -405,20 +459,22 @@ let currentSectionsData = [];
 
 // Pagination-aware renderer for All Sections
 function renderSectionsPage() {
-  const container = document.getElementById('sectionsContainer');
+  const container = document.getElementById("sectionsContainer");
   if (!container) return;
 
   const all = Array.isArray(window.sectionsAll) ? window.sectionsAll : [];
-  const term = (window.sectionsSearchTerm || '').toLowerCase().trim();
+  const term = (window.sectionsSearchTerm || "").toLowerCase().trim();
   const pageSize = Number(window.sectionsPageSize || 25);
   let page = Number(window.sectionsPage || 1);
 
   const filtered = term
     ? all.filter((s) => {
-        const name = (s && (s.name || '')).toString().toLowerCase();
-        const grade = (s && (s.gradeLevel || '')).toString().toLowerCase();
-        const teacher = (s && (s.teacher || '')).toString().toLowerCase();
-        return name.includes(term) || grade.includes(term) || teacher.includes(term);
+        const name = (s && (s.name || "")).toString().toLowerCase();
+        const grade = (s && (s.gradeLevel || "")).toString().toLowerCase();
+        const teacher = (s && (s.teacher || "")).toString().toLowerCase();
+        return (
+          name.includes(term) || grade.includes(term) || teacher.includes(term)
+        );
       })
     : all;
 
@@ -430,7 +486,8 @@ function renderSectionsPage() {
 
   const startIdx = total === 0 ? 0 : (page - 1) * pageSize + 1;
   const endIdx = total === 0 ? 0 : Math.min(page * pageSize, total);
-  const pageItems = total === 0 ? [] : filtered.slice((page - 1) * pageSize, page * pageSize);
+  const pageItems =
+    total === 0 ? [] : filtered.slice((page - 1) * pageSize, page * pageSize);
 
   // Top controls: Rows per page + range (match All Students UI)
   const topBar = `
@@ -438,10 +495,10 @@ function renderSectionsPage() {
       <div class="d-flex align-items-center gap-2">
         <label class="form-label mb-0 small text-muted">Rows per page:</label>
         <select id="sectionsPageSizeSelect" class="form-select form-select-sm" style="width:auto;">
-          <option value="10" ${pageSize===10?'selected':''}>10</option>
-          <option value="25" ${pageSize===25?'selected':''}>25</option>
-          <option value="50" ${pageSize===50?'selected':''}>50</option>
-          <option value="100" ${pageSize===100?'selected':''}>100</option>
+          <option value="10" ${pageSize === 10 ? "selected" : ""}>10</option>
+          <option value="25" ${pageSize === 25 ? "selected" : ""}>25</option>
+          <option value="50" ${pageSize === 50 ? "selected" : ""}>50</option>
+          <option value="100" ${pageSize === 100 ? "selected" : ""}>100</option>
         </select>
       </div>
       <div class="text-muted small" id="sectionsRangeInfo"></div>
@@ -479,10 +536,10 @@ function renderSectionsPage() {
       </tr>`;
   } else {
     pageItems.forEach((section, idx) => {
-      const s = typeof section === 'object' ? section : { name: section };
-      const name = s.name || 'Unknown Section';
-      const grade = s.gradeLevel || '';
-      const teacher = s.teacher || '';
+      const s = typeof section === "object" ? section : { name: section };
+      const name = s.name || "Unknown Section";
+      const grade = s.gradeLevel || "";
+      const teacher = s.teacher || "";
       const studentCount = s.studentCount || 0;
       const initial = name.charAt(0).toUpperCase();
       const rowIndex = (page - 1) * pageSize + idx + 1;
@@ -495,12 +552,16 @@ function renderSectionsPage() {
               <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; font-size: 14px; font-weight: bold;">${initial}</div>
               <div class="d-flex flex-column align-items-start">
                 <div class="fw-semibold">${name}</div>
-                ${grade ? `<small class="text-muted">Grade ${grade}</small>` : ''}
+                ${
+                  grade
+                    ? `<small class="text-muted">Grade ${grade}</small>`
+                    : ""
+                }
               </div>
             </div>
           </td>
-          <td class="text-start">${grade || ''}</td>
-          <td class="text-start">${teacher || ''}</td>
+          <td class="text-start">${grade || ""}</td>
+          <td class="text-start">${teacher || ""}</td>
           <td><span class="badge bg-warning text-dark">${studentCount}</span></td>
           <td>
             <div class="dropdown position-static d-flex justify-content-center">
@@ -509,23 +570,31 @@ function renderSectionsPage() {
               </button>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="sectionActionsDropdown${rowIndex}" style="z-index: 2000;">
                 <li>
-                  <a class="dropdown-item" href="#" onclick="viewSectionDetails('${name}', ${rowIndex-1})">
+                  <a class="dropdown-item" href="#" onclick="viewSectionDetails('${name}', ${
+        rowIndex - 1
+      })">
                     <i class="bi bi-eye me-2"></i>View Details
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="#" onclick="manageStudents('${name}', ${JSON.stringify(s).replace(/"/g, '&quot;')})">
+                  <a class="dropdown-item" href="#" onclick="manageStudents('${name}', ${JSON.stringify(
+        s
+      ).replace(/"/g, "&quot;")})">
                     <i class="bi bi-people me-2"></i>Manage Students
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="#" onclick="editSection('${name}', ${rowIndex-1}, ${JSON.stringify(s).replace(/"/g, '&quot;')})">
+                  <a class="dropdown-item" href="#" onclick="editSection('${name}', ${
+        rowIndex - 1
+      }, ${JSON.stringify(s).replace(/"/g, "&quot;")})">
                     <i class="bi bi-pencil me-2"></i>Edit Section
                   </a>
                 </li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
-                  <a class="dropdown-item text-danger" href="#" onclick="confirmDeleteSection('${name}', ${rowIndex-1})">
+                  <a class="dropdown-item text-danger" href="#" onclick="confirmDeleteSection('${name}', ${
+        rowIndex - 1
+      })">
                     <i class="bi bi-trash me-2"></i>Delete Section
                   </a>
                 </li>
@@ -548,9 +617,9 @@ function renderSectionsPage() {
   container.innerHTML = topBar + tableHtml + bottomBar;
 
   // Wire rows-per-page changes
-  const pageSizeSelect = document.getElementById('sectionsPageSizeSelect');
+  const pageSizeSelect = document.getElementById("sectionsPageSizeSelect");
   if (pageSizeSelect) {
-    pageSizeSelect.addEventListener('change', () => {
+    pageSizeSelect.addEventListener("change", () => {
       window.sectionsPageSize = parseInt(pageSizeSelect.value, 10) || 25;
       window.sectionsPage = 1;
       renderSectionsPage();
@@ -558,9 +627,10 @@ function renderSectionsPage() {
   }
 
   // Update range and totals
-  const rangeInfo = document.getElementById('sectionsRangeInfo');
-  if (rangeInfo) rangeInfo.textContent = `Showing ${startIdx}-${endIdx} of ${total}`;
-  const totalEl = document.getElementById('sectionsTotalCount');
+  const rangeInfo = document.getElementById("sectionsRangeInfo");
+  if (rangeInfo)
+    rangeInfo.textContent = `Showing ${startIdx}-${endIdx} of ${total}`;
+  const totalEl = document.getElementById("sectionsTotalCount");
   if (totalEl) totalEl.textContent = String(total);
 
   // Build pagination controls
@@ -568,31 +638,48 @@ function renderSectionsPage() {
 }
 
 function buildSectionsPaginationControls(totalPages, currentPage) {
-  const el = document.getElementById('sectionsPagination');
+  const el = document.getElementById("sectionsPagination");
   if (!el) return;
-  if (totalPages <= 1) { el.innerHTML = '<div class="small text-muted">Page 1 of 1</div>'; return; }
+  if (totalPages <= 1) {
+    el.innerHTML = '<div class="small text-muted">Page 1 of 1</div>';
+    return;
+  }
   const parts = [];
   function btn(label, page, disabled = false, active = false) {
-    return `<button class="btn btn-sm ${active ? 'btn-primary' : 'btn-outline-primary'} me-1 mb-1" data-page="${page}" ${disabled ? 'disabled' : ''}>${label}</button>`;
+    return `<button class="btn btn-sm ${
+      active ? "btn-primary" : "btn-outline-primary"
+    } me-1 mb-1" data-page="${page}" ${
+      disabled ? "disabled" : ""
+    }>${label}</button>`;
   }
-  parts.push(btn('«', 1, currentPage === 1));
-  parts.push(btn('‹', Math.max(1, currentPage - 1), currentPage === 1));
+  parts.push(btn("«", 1, currentPage === 1));
+  parts.push(btn("‹", Math.max(1, currentPage - 1), currentPage === 1));
   const windowSize = 5;
   let start = Math.max(1, currentPage - Math.floor(windowSize / 2));
   let end = start + windowSize - 1;
-  if (end > totalPages) { end = totalPages; start = Math.max(1, end - windowSize + 1); }
+  if (end > totalPages) {
+    end = totalPages;
+    start = Math.max(1, end - windowSize + 1);
+  }
   if (start > 1) parts.push('<span class="mx-1">...</span>');
   for (let p = start; p <= end; p++) {
     parts.push(btn(p, p, false, p === currentPage));
   }
   if (end < totalPages) parts.push('<span class="mx-1">...</span>');
-  parts.push(btn('›', Math.min(totalPages, currentPage + 1), currentPage === totalPages));
-  parts.push(btn('»', totalPages, currentPage === totalPages));
-  el.innerHTML = parts.join('');
-  el.querySelectorAll('[data-page]').forEach(b => {
-    b.addEventListener('click', (e) => {
-      const target = parseInt(e.currentTarget.getAttribute('data-page'), 10);
-      if (!isNaN(target) && target >= 1 && target <= totalPages && target !== window.sectionsPage) {
+  parts.push(
+    btn("›", Math.min(totalPages, currentPage + 1), currentPage === totalPages)
+  );
+  parts.push(btn("»", totalPages, currentPage === totalPages));
+  el.innerHTML = parts.join("");
+  el.querySelectorAll("[data-page]").forEach((b) => {
+    b.addEventListener("click", (e) => {
+      const target = parseInt(e.currentTarget.getAttribute("data-page"), 10);
+      if (
+        !isNaN(target) &&
+        target >= 1 &&
+        target <= totalPages &&
+        target !== window.sectionsPage
+      ) {
         window.sectionsPage = target;
         renderSectionsPage();
       }
@@ -785,10 +872,21 @@ function viewSectionDetails(sectionName, sectionIndex) {
           // Prefer finding by name to be robust with filtered/paginated indices
           if (sectionName) {
             const target = sectionName.toString().toLowerCase();
-            section = result.sections.find(s => (typeof s === 'object' ? (s.name || '') : (s || '')).toString().toLowerCase() === target) || null;
+            section =
+              result.sections.find(
+                (s) =>
+                  (typeof s === "object" ? s.name || "" : s || "")
+                    .toString()
+                    .toLowerCase() === target
+              ) || null;
           }
           // Fallback to index if name lookup fails and index is valid
-          if (!section && Number.isInteger(sectionIndex) && sectionIndex >= 0 && sectionIndex < result.sections.length) {
+          if (
+            !section &&
+            Number.isInteger(sectionIndex) &&
+            sectionIndex >= 0 &&
+            sectionIndex < result.sections.length
+          ) {
             section = result.sections[sectionIndex];
           }
           if (section) {
@@ -1099,7 +1197,7 @@ function loadSectionStudents(sectionName) {
 
 // Helper: populate teachers dropdown for the Edit Section modal
 function loadTeachersForEdit(selectedTeacher) {
-  const teacherSelect = document.getElementById('editSectionTeacher');
+  const teacherSelect = document.getElementById("editSectionTeacher");
   if (!teacherSelect) return;
 
   // Keep the placeholder and remove existing options beyond the first
@@ -1108,32 +1206,42 @@ function loadTeachersForEdit(selectedTeacher) {
   }
 
   if (window.api && window.api.getTeachers) {
-    window.api.getTeachers()
+    window.api
+      .getTeachers()
       .then((result) => {
         if (result.success && Array.isArray(result.teachers)) {
           result.teachers.forEach((teacher) => {
-            const name = typeof teacher === 'object' ? (teacher.name || '') : (teacher || '');
+            const name =
+              typeof teacher === "object" ? teacher.name || "" : teacher || "";
             if (!name) return;
-            const opt = document.createElement('option');
+            const opt = document.createElement("option");
             opt.value = name;
             opt.textContent = name;
             teacherSelect.appendChild(opt);
           });
 
           if (selectedTeacher) {
-            const target = (selectedTeacher || '').toString().toLowerCase().trim();
-            const match = Array.from(teacherSelect.options).find(o => o.value.toLowerCase().trim() === target);
+            const target = (selectedTeacher || "")
+              .toString()
+              .toLowerCase()
+              .trim();
+            const match = Array.from(teacherSelect.options).find(
+              (o) => o.value.toLowerCase().trim() === target
+            );
             if (match) teacherSelect.value = match.value;
           }
         } else {
-          console.warn('loadTeachersForEdit: Failed to load teachers', result.error);
+          console.warn(
+            "loadTeachersForEdit: Failed to load teachers",
+            result.error
+          );
         }
       })
       .catch((err) => {
-        console.error('loadTeachersForEdit: Error loading teachers', err);
+        console.error("loadTeachersForEdit: Error loading teachers", err);
       });
   } else {
-    console.warn('loadTeachersForEdit: Teachers API not available');
+    console.warn("loadTeachersForEdit: Teachers API not available");
   }
 }
 
@@ -1337,7 +1445,6 @@ function updateSection(form, originalSection) {
     return;
   }
 
-
   // Use reliable update method: delete and recreate
   performSectionUpdate(
     originalSectionName,
@@ -1379,11 +1486,9 @@ function performSectionUpdate(
           teacher: teacher,
         };
 
-
         window.api
           .createEntity({ type: "sections", data: newSectionData })
           .then((createResult) => {
-
             if (createResult.success) {
               // Success!
               showNotification(

@@ -52,10 +52,13 @@ contextBridge.exposeInMainWorld("api", {
   addSubject: (name) => ipcRenderer.invoke("add-subject", { name }),
   updateSectionSubjects: (payload) =>
     ipcRenderer.invoke("update-section-subjects", payload),
+  assignSubjectsToTeacher: (payload) =>
+    ipcRenderer.invoke("assign-subjects-to-teacher", payload),
   // Maintenance / backup
   fullBackup: () => ipcRenderer.invoke("full-backup"),
   resetDatabase: () => ipcRenderer.invoke("reset-database"),
-  checkForUpdates: () => ipcRenderer.send('check-for-updates'),
-  sendUpdateStatus: (cb) => ipcRenderer.on('update-status', (event, msg) => cb(msg)),
-  getAppVersion: () => ipcRenderer.invoke('get-app-version')
+  checkForUpdates: () => ipcRenderer.send("check-for-updates"),
+  sendUpdateStatus: (cb) =>
+    ipcRenderer.on("update-status", (event, msg) => cb(msg)),
+  getAppVersion: () => ipcRenderer.invoke("get-app-version"),
 });
