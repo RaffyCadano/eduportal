@@ -65,8 +65,32 @@
         </div>
     </div>
     <script src="renderer.js"></script>
-    <script>
-        // Bootstrap validation
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            setPersistence,
+            browserLocalPersistence,
+            browserSessionPersistence,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDPsbjpcCiBPM5fRgBnVOGXlu1t78a3-FE",
+            authDomain: "nvians.firebaseapp.com",
+            databaseURL: "https://nvians-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "nvians",
+            storageBucket: "nvians.firebasestorage.app",
+            messagingSenderId: "81362347883",
+            appId: "1:81362347883:web:5052436c2a7b15f60c8e2e",
+            measurementId: "G-0E3L1BRYCJ"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Bootstrap validation (keeps original behavior)
         (() => {
             'use strict';
             const forms = document.querySelectorAll('.needs-validation');
@@ -81,14 +105,16 @@
             });
         })();
 
-        // Admin login functionality
-        document.getElementById('admin-login-form').addEventListener('submit', function (event) {
+        // Firebase-based admin login (uses username field as email)
+        document.getElementById('admin-login-form').addEventListener('submit', async function (event) {
             event.preventDefault();
-            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
+            const rememberMe = document.getElementById('rememberMe').checked;
             const resultDiv = document.getElementById('login-result');
-            // Replace with your actual admin credentials or backend check
-            if (username === 'admin' && password === 'admin123') {
+            try {
+                await setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence);
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 resultDiv.textContent = 'Login successful!';
                 resultDiv.classList.remove('text-danger');
                 resultDiv.classList.add('text-success');
@@ -97,77 +123,39 @@
                         window.api.loginSuccess();
                     }
                 }, 500);
-            } else {
-                resultDiv.textContent = 'Invalid username or password.';
+            } catch (error) {
+                resultDiv.textContent = error.message || 'Authentication failed.';
                 resultDiv.classList.remove('text-success');
                 resultDiv.classList.add('text-danger');
             }
         });
-        // Remember Me functionality
-        window.addEventListener('DOMContentLoaded', function () {
-            const usernameInput = document.getElementById('username');
-            const rememberMeCheckbox = document.getElementById('rememberMe');
-            // Load remembered username
-            if (localStorage.getItem('rememberMe') === 'true') {
-                usernameInput.value = localStorage.getItem('rememberedUsername') || '';
-                rememberMeCheckbox.checked = true;
-                // Auto-login if credentials are valid
-                if (usernameInput.value === 'admin') {
-                    // You may want to store password securely, but for demo, check default
-                    // If you want to store password, use localStorage.getItem('rememberedPassword')
-                    // For now, auto-login only if username matches
-                    if (window.api && window.api.loginSuccess) {
-                        window.api.loginSuccess();
-                    }
+
+        // Auto-handle auth state: if already signed-in, proceed
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                if (window.api && window.api.loginSuccess) {
+                    window.api.loginSuccess();
                 }
             }
         });
 
-        document.getElementById('admin-login-form').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const rememberMe = document.getElementById('rememberMe').checked;
-            const resultDiv = document.getElementById('login-result');
-            // Remember Me logic
-            if (rememberMe) {
-                localStorage.setItem('rememberMe', 'true');
-                localStorage.setItem('rememberedUsername', username);
-            } else {
-                localStorage.removeItem('rememberMe');
-                localStorage.removeItem('rememberedUsername');
-            }
-            // Replace with your actual admin credentials or backend check
-            if (username === 'admin' && password === 'admin123') {
-                resultDiv.textContent = 'Login successful!';
-                resultDiv.classList.remove('text-danger');
-                resultDiv.classList.add('text-success');
-                setTimeout(() => {
-                    if (window.api && window.api.loginSuccess) {
-                        window.api.loginSuccess();
-                    }
-                }, 500);
-            } else {
-                resultDiv.textContent = 'Invalid username or password.';
-                resultDiv.classList.remove('text-success');
-                resultDiv.classList.add('text-danger');
-            }
-        });
-
-        // Window controls
-        document.getElementById('custom-close-btn').addEventListener('click', function () {
+        // Safe window controls (only attach if the element exists)
+        const closeBtn = document.getElementById('custom-close-btn');
+        if (closeBtn) closeBtn.addEventListener('click', function () {
             if (window.api && window.api.closeWindow) {
                 window.api.closeWindow();
             } else {
                 window.close();
             }
         });
-        document.getElementById('custom-minimize-btn').addEventListener('click', function () {
+        const minBtn = document.getElementById('custom-minimize-btn');
+        if (minBtn) minBtn.addEventListener('click', function () {
             if (window.api && window.api.minimizeWindow) {
                 window.api.minimizeWindow();
             }
         });
-        document.getElementById('custom-maximize-btn').addEventListener('click', function () {
+        const maxBtn = document.getElementById('custom-maximize-btn');
+        if (maxBtn) maxBtn.addEventListener('click', function () {
             if (window.api && window.api.maximizeWindow) {
                 window.api.maximizeWindow();
             }
